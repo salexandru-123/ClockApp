@@ -1,27 +1,23 @@
-// import {Clock, Alarm, Timer, Chronometer} from './components/index.js'
-
+import {app} from './components/index.js'
 const nav = document.querySelector('nav');
 const tabs = document.querySelectorAll('.app__tab');
-const sections = document.querySelectorAll('.app__feature');
+const mainSection = document.getElementsByTagName('main');
+app.get(1)(mainSection);
+    
 
-// Clock()
-// Alarm()
-// Timer()
-// Chronometer()
 nav.addEventListener('click', function(e){
     e.preventDefault()
     const clicked = e.target.closest('.app__tab')
     if(!clicked) return
-    //remove the active class of all sections
-    sections.forEach(element=>{
-        element.classList.remove('app__active');
-    });
+
+    // render the correct app tab
+    const currentFeature = mainSection.firstChildNode();
     
-    //set the clicked button relative section active
-    [...sections]
-        .find(el=>
-        el.id === `feature--${e.target.dataset.id}`)
-        .classList.add('app__active')
+    
+    if(currentFeature!=null) mainSection.removeChild(currentFeature);
+    console.log(e.target.dataset.id);
+    
+    app.get(Number(e.target.dataset.id))(mainSection);
     
     tabs.forEach(tab=>tab.classList.remove('active__tab'));
     e.target.closest('.app__tab')

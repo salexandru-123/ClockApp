@@ -1,11 +1,13 @@
-import {Clock} from "./clock";
-import {Alarm} from "./alarm";
-import {Chronometer} from "./chronometer";
-import {Timer} from "./timer";
+import Clock from './clock.js'
+import Alarm from "./alarm.js";
+import Chronometer from "./chronometer.js";
+import Timer from "./timer.js";
 
-export {
-    Clock,
-    Alarm,
-    Timer,
-    Chronometer,
-}
+
+
+export const app = new Map([
+    [1,Clock],
+    [2,Timer],
+    [3,Alarm],
+    [4,Chronometer],
+])
