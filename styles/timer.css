@@ -1,18 +1,32 @@
-#timer {
-  font-size: 32px;
+#feature--2{
+  text-align: center;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  height: 600px;
+  
+  margin:20px 0;
+}
+#timer {
+  height: 50%;
+  font-size: 2rem;
+  display: inline-flex;
   gap: 5px;
   user-select: none;
+  position: relative;
+  width: fit-content;
 }
 
 .time-unit {
+  height: fit-content;
   padding: 5px 10px;
   border: 1px solid #ccc;
   cursor: pointer;
-  position: relative;
 }
 
 #dropdown {
+  font-size: 32px;
   position: absolute;
   display: none;
   background: white;
@@ -22,7 +36,10 @@
 }
 
 .dropdown-option {
-  padding: 5px;
+  font-size: 32px;
+  padding: 5px 10px;
+
+  border: 1px solid #ccc;
   cursor: pointer;
 }
 

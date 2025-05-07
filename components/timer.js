@@ -1,14 +1,27 @@
 
 const Timer = function(container){
+/*
+# To-Do:
+  - Learn how to make the countdown work
+  - Make a start , pause , reset button
+  - Make a system to store the history of timers
+  - Fix the scrolling to go up when scrolling up and viceversa for going down
+
+
+*/
+
+
     container.innerHTML = `
         <section id="feature--2" class="app__feature" data-sect="2">
+            
             <h1>Timer</h1>
             <div id="timer">
                 <div class="time-unit" data-type="hours" data-max="23" data-min="0">00</div>:
                 <div class="time-unit" data-type="minutes" data-max="59" data-min="0">00</div>:
                 <div class="time-unit" data-type="seconds" data-max="59" data-min="0">00</div>
+                
+              <div id="dropdown"></div>
             </div>
-            <div id="dropdown"></div>
         </section>
         `
         const timer = document.getElementById("timer");
@@ -24,11 +37,13 @@ const Timer = function(container){
           const min = parseInt(el.dataset.min);
           const max = parseInt(el.dataset.max);
           const rect = el.getBoundingClientRect();
+          const containerRect = timer.getBoundingClientRect();
           const current = parseInt(el.textContent);
-        
           dropdown.style.display = "block";
-          dropdown.style.top = `${rect.bottom + window.scrollY}px`;
-          dropdown.style.left = `${rect.left + window.scrollX}px`;
+          // distance from the bottom of the container to the dropdown + height of the element + height of the container 
+          dropdown.style.top = `${(containerRect.bottom-rect.bottom) + (rect.top-rect.bottom) + (containerRect.top - containerRect.bottom)}px`;
+          // distance between the container and the element left side
+          dropdown.style.left = `${rect.left-containerRect.left}px`;
           dropdown.innerHTML = "";
         
           for (let i = current - 2; i <= current + 2; i++) {
