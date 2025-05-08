@@ -7,11 +7,15 @@
   height: 600px;
   
   margin:20px 0;
+  margin-bottom: 54px;
 }
 #timer {
-  height: 50%;
+  /*NEVER CHANGE THE HEIGHT YOU WILL BREAK THE TIMER DROPDOWN*/
+  height: 100%; 
   font-size: 2rem;
-  display: inline-flex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 5px;
   user-select: none;
   position: relative;
@@ -26,17 +30,16 @@
 }
 
 #dropdown {
-  font-size: 32px;
+  font-size: 2rem;
   position: absolute;
   display: none;
   background: white;
   border: 1px solid #000;
   z-index: 100;
-  font-size: 24px;
 }
 
 .dropdown-option {
-  font-size: 32px;
+  font-size: 2rem;
   padding: 5px 10px;
 
   border: 1px solid #ccc;

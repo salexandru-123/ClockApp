@@ -6,7 +6,7 @@ const Timer = function(container){
   - Make a start , pause , reset button
   - Make a system to store the history of timers
   - Fix the scrolling to go up when scrolling up and viceversa for going down
-
+  
 
 */
 
@@ -26,6 +26,7 @@ const Timer = function(container){
         `
         const timer = document.getElementById("timer");
         const dropdown = document.getElementById("dropdown");
+         // will be set when clicked on a timer element
         let activeElement = null;
         
         function pad(num) {
@@ -39,9 +40,10 @@ const Timer = function(container){
           const rect = el.getBoundingClientRect();
           const containerRect = timer.getBoundingClientRect();
           const current = parseInt(el.textContent);
+          let rectHeight = rect.bottom-rect.top;
           dropdown.style.display = "block";
-          // distance from the bottom of the container to the dropdown + height of the element + height of the container 
-          dropdown.style.top = `${(containerRect.bottom-rect.bottom) + (rect.top-rect.bottom) + (containerRect.top - containerRect.bottom)}px`;
+          // there is still an issue here when changing the container height
+          dropdown.style.top = `${rect.bottom - rectHeight*4}px`; 
           // distance between the container and the element left side
           dropdown.style.left = `${rect.left-containerRect.left}px`;
           dropdown.innerHTML = "";
@@ -74,12 +76,12 @@ const Timer = function(container){
         });
         
         timer.addEventListener("wheel", (e) => {
-          if (activeElement) {
-            e.preventDefault();
+          e.preventDefault();
+          if (activeElement) {//activeElement will be set to our e.target after clicking it
             let value = parseInt(activeElement.textContent);
             let min = parseInt(activeElement.dataset.min);
             let max = parseInt(activeElement.dataset.max);
-            value += e.deltaY < 0 ? 1 : -1;
+            value += e.deltaY < 0 ? -1 : 1;
             if (value > max) value = min;
             if (value < min) value = max;
             activeElement.textContent = pad(value);
