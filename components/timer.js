@@ -15,15 +15,26 @@ const Timer = function(container){
         <section id="feature--2" class="app__feature" data-sect="2">
             
             <h1>Timer</h1>
+			
             <article id="timer">
-                <div class="time-unit" data-type="hours" data-max="23" data-min="0">00</div>:
-                <div class="time-unit" data-type="minutes" data-max="59" data-min="0">00</div>:
-                <div class="time-unit" data-type="seconds" data-max="59" data-min="0">00</div>
+				
+				
+                <div class="time-unit" data-type="hours" data-max="23" data-min="0">00
+				
+				</div>:
                 
+				<div class="time-unit" data-type="minutes" data-max="59" data-min="0">00</div>:
+                
+				<div class="time-unit" data-type="seconds" data-max="59" data-min="0">00</div>
+                
+				
               <div id="dropdown"></div>
+			  
             </article>
             <div id='timer-buttons'>
-                <button type=''></button>
+                <button name="start" class="timer__btn" id="start__timer">&#10148;</button>
+                <button name="stop"  class="timer__btn" id="stop__timer">&#9209;</button>
+                <button name="reset" class="timer__btn" id="reset__timer">&#8634;</button>
             </div>
         </section>
         `
