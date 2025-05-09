@@ -10,7 +10,6 @@
   margin-bottom: 54px;
 }
 #timer {
-  /*NEVER CHANGE THE HEIGHT YOU WILL BREAK THE TIMER DROPDOWN*/
   height: 100%; 
   font-size: 2rem;
   display: flex;
@@ -20,6 +19,7 @@
   user-select: none;
   position: relative;
   width: fit-content;
+  
 }
 
 .time-unit {
@@ -27,6 +27,7 @@
   padding: 5px 10px;
   border: 1px solid #ccc;
   cursor: pointer;
+
 }
 
 #dropdown {
@@ -34,18 +35,23 @@
   position: absolute;
   display: none;
   background: white;
-  border: 1px solid #000;
   z-index: 100;
+  width: auto;
+  flex-direction: column;
+  align-items: center;
+  
 }
 
 .dropdown-option {
+  width: fit-content;
   font-size: 2rem;
   padding: 5px 10px;
-
   border: 1px solid #ccc;
+  
   cursor: pointer;
 }
 
 .dropdown-option:hover {
-  background-color: #eee;
+  background-color: #777;
+  
 }

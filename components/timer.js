@@ -5,8 +5,8 @@ const Timer = function(container){
   - Learn how to make the countdown work
   - Make a start , pause , reset button
   - Make a system to store the history of timers
-  - Fix the scrolling to go up when scrolling up and viceversa for going down
   
+  - Fix margin not resetting after clicking off the time-unit el
 
 */
 
@@ -15,12 +15,15 @@ const Timer = function(container){
         <section id="feature--2" class="app__feature" data-sect="2">
             
             <h1>Timer</h1>
-            <div id="timer">
+            <article id="timer">
                 <div class="time-unit" data-type="hours" data-max="23" data-min="0">00</div>:
                 <div class="time-unit" data-type="minutes" data-max="59" data-min="0">00</div>:
                 <div class="time-unit" data-type="seconds" data-max="59" data-min="0">00</div>
                 
               <div id="dropdown"></div>
+            </article>
+            <div id='timer-buttons'>
+                <button type=''></button>
             </div>
         </section>
         `
@@ -41,19 +44,22 @@ const Timer = function(container){
           const containerRect = timer.getBoundingClientRect();
           const current = parseInt(el.textContent);
           let rectHeight = rect.bottom-rect.top;
-          dropdown.style.display = "block";
-          // there is still an issue here when changing the container height
-          dropdown.style.top = `${rect.bottom - rectHeight*4}px`; 
+          dropdown.style.display = "inline-flex";
           // distance between the container and the element left side
           dropdown.style.left = `${rect.left-containerRect.left}px`;
+          
           dropdown.innerHTML = "";
         
           for (let i = current - 2; i <= current + 2; i++) {
             let value = (i + (max + 1)) % (max + 1); // wrap around
             const option = document.createElement("div");
+			
             option.className = "dropdown-option";
             option.textContent = pad(value);
-            option.onclick = () => {
+			option.style.display = 'block';
+            if(i === current) 
+				option.style="font-size: 2.5rem; padding: 7px 12px;";
+			option.onclick = () => {
               el.textContent = pad(value);
               dropdown.style.display = "none";
             };
@@ -64,7 +70,10 @@ const Timer = function(container){
         }
         
         timer.addEventListener("click", (e) => {
+          if(activeElement) activeElement.style.margin = '0';
+          
           if (e.target.classList.contains("time-unit")) {
+            e.target.style.margin='12px'
             showDropdown(e.target);
           }
         });
