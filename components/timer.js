@@ -15,59 +15,53 @@ class Countdown{
 	time;
 	element;
 	timer;
-	
+	timeTemp = this.time;
 	/**
 	 *
 	 */
 	constructor(time = null, element = null) {
-		if(!time || !element) return;
 		this.time = time;
 		this.element = element;
+		this.timeTemp = time;
+		
 	}
 
-	/**Get: Return time in seconds of the object
-	 * Set: Value needs to be an integer
-	 */
-	// Time(value=null){
-	// 	if(value!=null && typeof value === 'number'){
-	// 		this.time = value;
-	// 		return;
-	// 	}
-	// 	return this.time
-	// }
-	/**Get: Returns the element used by the object
-	 * Set: Value needs to be an object
-	 */
-	// Element(value=null){
-	// 	if(value!=null){
-	// 		this.element = value;
-	// 		return;
-	// 	}
-	// 	return this.element;
-	// }
 
 	countdown(){
-		console.log(this.element);
-		const hours = String(Math.floor(this.time / 60 / 60)).padStart(2, '0');
-		const minutes = String(Math.floor(this.time / 60)).padStart(2, '0');
-		const seconds = String(this.time % 60).padStart(2, '0');
-		this.element.textContent = `${hours}:${minutes}:${seconds}`;
-		if (this.time === 0) {
-			clearInterval(this.timer);
+		if(this.timeTemp===null ) this.timeTemp = this.time
+		const hours = String(Math.floor(this.timeTemp / 60 / 60)).padStart(2, '0');
+		const minutes = String(Math.floor(this.timeTemp / 60)).padStart(2, '0');
+		const seconds = String(this.timeTemp % 60).padStart(2, '0');
+		this.element.textContent= `${hours}:${minutes}:${seconds}`;
+		if(this.element.getAttribute('data-hours')===null){			
+			this.element.setAttribute('data-hours',hours);
+			this.element.setAttribute('data-minutes',minutes);
+			this.element.setAttribute('data-seconds',seconds);
+		}else{
+			this.element.dataset.hours = hours;
+			this.element.dataset.minutes = minutes;
+			this.element.dataset.seconds = seconds;
 		}
-		this.time--;
+		if (this.timeTemp === 0) {
+			clearInterval(this.timer);
+			return
+		}
+		this.timeTemp--;
 	};
 	resetTimer(){
-		this.time = 180;
+		this.timeTemp = this.time;
 		clearInterval(this.timer);
-		this.countdown();
-		this.timer = setInterval(countdown, 1000);
+		this.timer = setInterval(this.countdown.bind(this), 1000);
 	};
-	stopTimer(){
+	pauseTimer(){
 		clearInterval(this.timer);
 	};
+	unpauseTimer(value){
+		this.timeTemp = value;
+		this.timer = setInterval(this.countdown.bind(this), 1000);
+	}
 	startTimer(){
-		this.timer = setInterval(this.countdown, 1000);
+		this.timer = setInterval(this.countdown.bind(this), 1000);
 	}
 }
 
@@ -105,6 +99,8 @@ const Timer = function(container){
 	// variables 
 
 	// Constants
+	
+	const timerObj = new Countdown();
 	const timer = document.getElementById("timer");
 	const dropdown = document.getElementById("dropdown");
 	const timerHistory = document.getElementById('timers-history');
@@ -152,11 +148,10 @@ const Timer = function(container){
 			option.className = "dropdown-option";
 			option.textContent = pad(value);
 			option.style.display = 'block';
-			if(i === current) 
-				option.style="font-size: 2.5rem; padding: 7px 12px;";
+			if(i === current) option.style="font-size: 2.5rem; padding: 7px 12px;";
 			option.onclick = () => {
-			el.textContent = pad(value);
-			dropdown.style.display = "none";
+				el.textContent = pad(value);
+				dropdown.style.display = "none";
 			};
 			dropdown.appendChild(option);
 		}
@@ -166,20 +161,53 @@ const Timer = function(container){
 	function startTimer(){
 		const hours = hoursLabel.textContent;
 		const minutes = minutsLabel.textContent;
-		const seconds = minutsLabel.textContent;
-		let time = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
+		const seconds = secondsLabel.textContent;
+		let _time = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
 		
-		const timerTemp = new Countdown(time,timerHistory.querySelector('.'+tempDiv.className));
+
 		const tempDiv = document.createElement('div');
-		
 		tempDiv.classList.add('timer_history--1');
-		timerHistory.insertAdjacentElement('beforeend',tempDiv)
+		
+		timerHistory.insertAdjacentElement('beforeend', tempDiv)
+		// console.log(timerHistory.querySelector('.'+tempDiv.className));
+		timerObj.time = _time;
+		timerObj.element = tempDiv;
+		console.log(timerObj.time, timerObj.element);
+		
+		timerObj.startTimer();
+		
 
 		
-		console.log(time);
-		console.log(timerHistory.querySelector('.'+tempDiv.className));
+		// console.log(time);
+		// console.log(timerHistory.querySelector('.'+tempDiv.className));
 		
 
+	}
+
+	const resetTimer = function(){
+		const timerElement = timerHistory.querySelector('.timer_history--1');
+		
+		timerObj.element = timerElement;
+		timerObj.resetTimer();
+		
+	}
+	const pauseTimer = function(){
+		startBtn.textContent = '&#9724;';
+		
+		// Make the start button turno into pause and unpause button when clicking it
+		// and use this function for that
+		timerObj.pauseTimer();
+		
+	}
+	const unpauseTimer = function(){
+		startBtn.textContent = '&#10148;';
+		const timerElement = timerHistory.querySelector('.timer_history--1');
+		const hours = timerElement.dataset.hours;
+		const minutes = timerElement.dataset.minutes;
+		const seconds = timerElement.dataset.seconds;
+		let currentTime = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
+		
+		timerObj.unpauseTimer(currentTime);
 	}
 	// ------------------------------
 
@@ -229,5 +257,7 @@ const Timer = function(container){
 		e.preventDefault();
 		startTimer();
 	})
+	resetBtn.addEventListener('click', resetTimer);
+	stopBtn.addEventListener('click', pauseTimer);
 }
 export default Timer;
