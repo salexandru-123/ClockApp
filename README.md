@@ -16,3 +16,9 @@
 - **Add some cool styling to the app**
 - **Create a history system for the timer and alarm functionalities for reusability**
 - **Clean the code and improve speed for improving time precision**
+
+### Technology used:
+
+- **HTML5**
+- **CSS3**
+- **Javascript**
