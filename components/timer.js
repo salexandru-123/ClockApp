@@ -1,70 +1,13 @@
 /*
 # To-Do:
-  - Learn how to make the countdown work:
-	- Use the countdown function used in the udemy course projects
-	- Find a way to make multiple timers work simuntaneously (async) 
-	and send an alert at the end of each.
-  - Make a start , pause , reset button
   - Make a system to store the history of timers
+  - Let the user reuse old timers and add a start pause and reset 
+  	button on each of them
   
-  - Fix margin not resetting after clicking off the time-unit el
 
 */
-import { hoursToSec, minToSec } from "./functions.js";
-class Countdown{
-	time;
-	element;
-	timer;
-	timeTemp = this.time;
-	/**
-	 *
-	 */
-	constructor(time = null, element = null) {
-		this.time = time;
-		this.element = element;
-		this.timeTemp = time;
-		
-	}
-
-
-	countdown(){
-		if(this.timeTemp===null ) this.timeTemp = this.time
-		const hours = String(Math.floor(this.timeTemp / 60 / 60)).padStart(2, '0');
-		const minutes = String(Math.floor(this.timeTemp / 60)).padStart(2, '0');
-		const seconds = String(this.timeTemp % 60).padStart(2, '0');
-		this.element.textContent= `${hours}:${minutes}:${seconds}`;
-		if(this.element.getAttribute('data-hours')===null){			
-			this.element.setAttribute('data-hours',hours);
-			this.element.setAttribute('data-minutes',minutes);
-			this.element.setAttribute('data-seconds',seconds);
-		}else{
-			this.element.dataset.hours = hours;
-			this.element.dataset.minutes = minutes;
-			this.element.dataset.seconds = seconds;
-		}
-		if (this.timeTemp === 0) {
-			clearInterval(this.timer);
-			return
-		}
-		this.timeTemp--;
-	};
-	resetTimer(){
-		this.timeTemp = this.time;
-		clearInterval(this.timer);
-		this.timer = setInterval(this.countdown.bind(this), 1000);
-	};
-	pauseTimer(){
-		clearInterval(this.timer);
-	};
-	unpauseTimer(value){
-		this.timeTemp = value;
-		this.timer = setInterval(this.countdown.bind(this), 1000);
-	}
-	startTimer(){
-		this.timer = setInterval(this.countdown.bind(this), 1000);
-	}
-}
-
+import { hoursToSec, minToSec, pad} from "./functions.js";
+import Countdown from "./classes/Countdown.js";
 function htmlContent(_container){
 	// load dynamic html
 	_container.innerHTML = `
@@ -84,8 +27,8 @@ function htmlContent(_container){
             <div id='timer-buttons'>
                 <button name="start" class="timer__btn" id="start__timer">&#10148;</button>
                 
-				<button name="stop"  class="timer__btn" id="stop__timer">&#9209;</button>
-                
+				<button name="pause" class="timer__btn hidden" id="pause__timer">&#8214;</button>
+
 				<button name="reset" class="timer__btn" id="reset__timer">&#8634;</button>
             </div>
 			<div id='timers-history'></div>
@@ -105,11 +48,12 @@ const Timer = function(container){
 	const dropdown = document.getElementById("dropdown");
 	const timerHistory = document.getElementById('timers-history');
 	const startBtn = document.getElementById('start__timer');
-	const stopBtn = document.getElementById('stop__timer');
 	const resetBtn = document.getElementById('reset__timer');
+	const pauseBtn = document.getElementById('pause__timer');
 	const hoursLabel = [...timer.querySelectorAll('.time-unit')].find(el=>el.dataset.type === 'hours');
-	const minutsLabel = [...timer.querySelectorAll('.time-unit')].find(el=>el.dataset.type === 'minutes');
+	const minutesLabel = [...timer.querySelectorAll('.time-unit')].find(el=>el.dataset.type === 'minutes');
 	const secondsLabel = [...timer.querySelectorAll('.time-unit')].find(el=>el.dataset.type === 'seconds');
+	
 	// Dynamic
 	let activeElement = null;// will be set when clicked on a timer element
 	
@@ -117,9 +61,7 @@ const Timer = function(container){
 
 	// Functions
 
-	function pad(num) {
-		return String(num).padStart(2, '0');
-	}
+	
 	function closeDropdown(){
 		if(activeElement) activeElement.style.margin = '0';
 		activeElement = null
@@ -157,57 +99,34 @@ const Timer = function(container){
 		}
 		activeElement = el;
 	}
-
-	function startTimer(){
-		const hours = hoursLabel.textContent;
-		const minutes = minutsLabel.textContent;
-		const seconds = secondsLabel.textContent;
-		let _time = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
-		
-
-		const tempDiv = document.createElement('div');
-		tempDiv.classList.add('timer_history--1');
-		
-		timerHistory.insertAdjacentElement('beforeend', tempDiv)
-		// console.log(timerHistory.querySelector('.'+tempDiv.className));
+	
+	// start timer functionality
+	function startTimer(e,index = null){
+		let tempDiv,hours,minutes,seconds;
+		if(timerHistory.childElementCount===0){
+			hours = hoursLabel.textContent;
+			minutes = minutesLabel.textContent;
+			seconds = secondsLabel.textContent;
+			tempDiv = document.createElement('div');
+			tempDiv.classList.add('timer_history--1');
+			timerHistory.insertAdjacentElement('beforeend', tempDiv)
+		}
+		else{
+			tempDiv = timerHistory.querySelector(`.timer_history--1`);
+			[hours, minutes, seconds] = tempDiv.textContent.split(':').map(val => Number(val));
+		}
+		const _time = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
 		timerObj.time = _time;
 		timerObj.element = tempDiv;
-		console.log(timerObj.time, timerObj.element);
-		
-		timerObj.startTimer();
-		
-
-		
-		// console.log(time);
-		// console.log(timerHistory.querySelector('.'+tempDiv.className));
-		
-
+		timerObj.startTimer(startBtn, pauseBtn);
 	}
 
+	// reset timer functionality
 	const resetTimer = function(){
-		const timerElement = timerHistory.querySelector('.timer_history--1');
-		
+		const timerElement = timerHistory.querySelector('.timer_history--1');	
 		timerObj.element = timerElement;
 		timerObj.resetTimer();
 		
-	}
-	const pauseTimer = function(){
-		startBtn.textContent = '&#9724;';
-		
-		// Make the start button turno into pause and unpause button when clicking it
-		// and use this function for that
-		timerObj.pauseTimer();
-		
-	}
-	const unpauseTimer = function(){
-		startBtn.textContent = '&#10148;';
-		const timerElement = timerHistory.querySelector('.timer_history--1');
-		const hours = timerElement.dataset.hours;
-		const minutes = timerElement.dataset.minutes;
-		const seconds = timerElement.dataset.seconds;
-		let currentTime = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
-		
-		timerObj.unpauseTimer(currentTime);
 	}
 	// ------------------------------
 
@@ -252,12 +171,9 @@ const Timer = function(container){
 		}
 	});
     
-	// Start Button Event listener
-	startBtn.addEventListener('click', (e)=>{
-		e.preventDefault();
-		startTimer();
-	})
+	// Buttons Event listener
+	startBtn.addEventListener('click',startTimer.bind());
+	pauseBtn.addEventListener('click', timerObj.pauseTimer);
 	resetBtn.addEventListener('click', resetTimer);
-	stopBtn.addEventListener('click', pauseTimer);
 }
 export default Timer;

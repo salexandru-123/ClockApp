@@ -13,9 +13,13 @@ const hoursToSec = function(hours){
 const minToSec = function(minutes){
     return Number(minutes)*60
 }
+function pad(num) {
+    return String(num).padStart(2, '0');
+}
 
 export {
     formatHour,
     minToSec,
     hoursToSec,
+    pad
 }
