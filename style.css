@@ -52,3 +52,41 @@ nav{
     color: beige;
     cursor: not-allowed;
 }
+.app__feature{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.time-unit {
+    height: fit-content;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-size: 2rem;   
+}
+#dropdown {
+    font-size: 2rem;
+    position: absolute;
+    display: none;
+    background: transparent;
+    z-index: 100;
+    width: fit-content;
+    flex-direction: column;
+    align-items: center;
+    
+  }
+  
+  .dropdown-option {
+    background: white;
+    width: fit-content;
+    font-size: 2rem;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    
+    cursor: pointer;
+  }
+  
+  .dropdown-option:hover {
+    background-color: #777;
+  }  

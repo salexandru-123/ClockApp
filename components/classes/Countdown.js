@@ -8,8 +8,11 @@ class Countdown{
 	timeTemp = this.time;
 	startBtn;
 	pauseBtn;
-	/**
+	/** Countdown Constructor
 	 *
+	 * Return: A Countdown object of the class.
+	 * 
+	 * Usage: Leave empty if you need to modify in the future
 	 */
 	constructor(time = null, element = null) {
 		this.time = time;
@@ -18,7 +21,21 @@ class Countdown{
 		
 	}
 
-
+	/**Countdown Method of Object Countdown
+	 * 
+	 * **Return:** 
+	 * 	- 'true' if countdown ended 
+	 *  - 'null' in any other case
+	 * 
+	 * Usage: Used together with an interval.
+	 * 
+	 * Required parameters: 
+	 *  - @param timeTemp 
+	 * 	- @param time 
+	 * 	- @param element 
+	 * 	- @param startBtn 
+	 * 	- @param pauseBtn
+	 */
 	countdown(){
 		if(this.timeTemp===null ) this.timeTemp = this.time
 		const hours = String(Math.floor(this.timeTemp / 60 / 60)).padStart(2, '0');

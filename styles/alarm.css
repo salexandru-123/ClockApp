@@ -1,0 +1,7 @@
+#alarm-setter{
+    display: flex;
+    flex: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}

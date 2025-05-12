@@ -1,8 +1,12 @@
 /*
+* This actual version works with a single timer.
+
 # To-Do:
-  - Make a system to store the history of timers
-  - Let the user reuse old timers and add a start pause and reset 
-  	button on each of them
+	- Fix the timer so that the user can set multiple timers and stop
+		them independently
+	- Make a system to store the history of timers
+	- Let the user reuse old timers and add a start pause and reset 
+  		button on each of them
   
 
 */
@@ -24,14 +28,17 @@ function htmlContent(_container){
               	
 				<div id="dropdown"></div>
             </article>
-            <div id='timer-buttons'>
+
+            <article id='timer-buttons'>
                 <button name="start" class="timer__btn" id="start__timer">&#10148;</button>
                 
 				<button name="pause" class="timer__btn hidden" id="pause__timer">&#8214;</button>
 
 				<button name="reset" class="timer__btn" id="reset__timer">&#8634;</button>
-            </div>
-			<div id='timers-history'></div>
+            </article>
+			<article id='timers-history'>
+			
+			</article>
         </section>`
 }
 
@@ -77,12 +84,14 @@ const Timer = function(container){
 		const containerRect = timer.getBoundingClientRect();
 		const current = parseInt(el.textContent);
 		let rectHeight = rect.bottom-rect.top;
-		dropdown.style.display = "inline-flex";
+		dropdown.style.display = "inline-flex"; 
 		// distance between the container and the element left side
 		dropdown.style.left = `${rect.left-containerRect.left}px`;
 
 		dropdown.innerHTML = "";
-
+		
+		// find current value's last and next 2 digits
+		// then add them to the dropdown as a 'dropdown-option'
 		for (let i = current - 2; i <= current + 2; i++) {
 			let value = (i + (max + 1)) % (max + 1); // wrap around
 			const option = document.createElement("div");
@@ -90,6 +99,7 @@ const Timer = function(container){
 			option.className = "dropdown-option";
 			option.textContent = pad(value);
 			option.style.display = 'block';
+			// make the current value in the middle display larger than the others
 			if(i === current) option.style="font-size: 2.5rem; padding: 7px 12px;";
 			option.onclick = () => {
 				el.textContent = pad(value);
@@ -101,8 +111,15 @@ const Timer = function(container){
 	}
 	
 	// start timer functionality
-	function startTimer(e,index = null){
+	// this method is used both for unpause and starting the timer
+	// FIX THIS TO HANDLE MULTIPLE TIMERS FROM THE HISTORY
+	function startTimer(){
 		let tempDiv,hours,minutes,seconds;
+		
+		
+		//	if there aren't any elements in the history
+		// 	create it with the chosen time 
+		// 	else get the time from the current element and start from there
 		if(timerHistory.childElementCount===0){
 			hours = hoursLabel.textContent;
 			minutes = minutesLabel.textContent;
@@ -118,6 +135,7 @@ const Timer = function(container){
 		const _time = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
 		timerObj.time = _time;
 		timerObj.element = tempDiv;
+		// we pass in the start,pause btn element to dynamically switch them
 		timerObj.startTimer(startBtn, pauseBtn);
 	}
 
@@ -136,6 +154,8 @@ const Timer = function(container){
 	timer.addEventListener("click", (e) => {
 		if(activeElement) activeElement.style.margin = '0';
 		if (e.target.classList.contains("time-unit")) {
+			// this fixes the margin when clicking on the element to 
+			// appear centered
 			e.target.style.margin='0 12px 19px 0'
 			showDropdown(e.target);
 		}
@@ -152,10 +172,14 @@ const Timer = function(container){
 	// Mouse Wheel functionality
 	timer.addEventListener("wheel", (e) => {
 		e.preventDefault();
-		if (activeElement) {//activeElement will be set to our e.target after clicking it
+		if (activeElement) {
+			// activeElement will be set to our e.target 
+			// after clicking it the first time
 			let value = parseInt(activeElement.textContent);
 			let min = parseInt(activeElement.dataset.min);
 			let max = parseInt(activeElement.dataset.max);
+			// if user scrolls up, sets the previous value as 
+			// current_value else the next one 
 			value += e.deltaY < 0 ? -1 : 1;
 			if (value > max) value = min;
 			if (value < min) value = max;
