@@ -33,22 +33,3 @@
   gap:.5rem;
 }
 
-.timer__btn{
-  min-height: 100%;
-  width: 3rem;
-  height: 3rem;
-  padding: 10px;
-  font-size: 1rem;
-  border: none;
-  cursor: pointer;
-  color:rgba(255,255,255,1);
-  background-color: #777;
-}
-.timer__btn:hover{
-  background-color: aliceblue;
-  color: #777;
-}
-
-.hidden{
-  display: none;
-}

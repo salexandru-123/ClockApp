@@ -12,6 +12,7 @@
 */
 import { hoursToSec, minToSec, pad} from "./functions.js";
 import Countdown from "./classes/Countdown.js";
+import TimeDropdown from "./classes/TimeDropdown.js"
 function htmlContent(_container){
 	// load dynamic html
 	_container.innerHTML = `
@@ -30,11 +31,11 @@ function htmlContent(_container){
             </article>
 
             <article id='timer-buttons'>
-                <button name="start" class="timer__btn" id="start__timer">&#10148;</button>
+                <button name="start" class="app__btn" id="start__timer">&#10148;</button>
                 
-				<button name="pause" class="timer__btn hidden" id="pause__timer">&#8214;</button>
+				<button name="pause" class="app__btn hidden" id="pause__timer">&#8214;</button>
 
-				<button name="reset" class="timer__btn" id="reset__timer">&#8634;</button>
+				<button name="reset" class="app__btn" id="reset__timer">&#8634;</button>
             </article>
 			<article id='timers-history'>
 			
@@ -57,59 +58,14 @@ const Timer = function(container){
 	const startBtn = document.getElementById('start__timer');
 	const resetBtn = document.getElementById('reset__timer');
 	const pauseBtn = document.getElementById('pause__timer');
-	const hoursLabel = [...timer.querySelectorAll('.time-unit')].find(el=>el.dataset.type === 'hours');
-	const minutesLabel = [...timer.querySelectorAll('.time-unit')].find(el=>el.dataset.type === 'minutes');
-	const secondsLabel = [...timer.querySelectorAll('.time-unit')].find(el=>el.dataset.type === 'seconds');
+	const [hoursLabel, minutesLabel, secondsLabel] = [...timer.querySelectorAll('.time-unit')]
 	
 	// Dynamic
-	let activeElement = null;// will be set when clicked on a timer element
-	
+	let dropdownObject = new TimeDropdown(dropdown);
 
 
 	// Functions
 
-	
-	function closeDropdown(){
-		if(activeElement) activeElement.style.margin = '0';
-		activeElement = null
-		dropdown.style.display = "none";
-	}
-	
-	function showDropdown(el) {
-		// Uncomment if you need these
-		// const type = el.dataset.type;
-		// const min = parseInt(el.dataset.min);
-		const max = parseInt(el.dataset.max);
-		const rect = el.getBoundingClientRect();
-		const containerRect = timer.getBoundingClientRect();
-		const current = parseInt(el.textContent);
-		let rectHeight = rect.bottom-rect.top;
-		dropdown.style.display = "inline-flex"; 
-		// distance between the container and the element left side
-		dropdown.style.left = `${rect.left-containerRect.left}px`;
-
-		dropdown.innerHTML = "";
-		
-		// find current value's last and next 2 digits
-		// then add them to the dropdown as a 'dropdown-option'
-		for (let i = current - 2; i <= current + 2; i++) {
-			let value = (i + (max + 1)) % (max + 1); // wrap around
-			const option = document.createElement("div");
-			
-			option.className = "dropdown-option";
-			option.textContent = pad(value);
-			option.style.display = 'block';
-			// make the current value in the middle display larger than the others
-			if(i === current) option.style="font-size: 2.5rem; padding: 7px 12px;";
-			option.onclick = () => {
-				el.textContent = pad(value);
-				dropdown.style.display = "none";
-			};
-			dropdown.appendChild(option);
-		}
-		activeElement = el;
-	}
-	
 	// start timer functionality
 	// this method is used both for unpause and starting the timer
 	// FIX THIS TO HANDLE MULTIPLE TIMERS FROM THE HISTORY
@@ -151,52 +107,47 @@ const Timer = function(container){
 	// Event Listeners
 
 	// Toggle On the dropdown when clicking the time-unit element
-	timer.addEventListener("click", (e) => {
-		if(activeElement) activeElement.style.margin = '0';
-		if (e.target.classList.contains("time-unit")) {
-			// this fixes the margin when clicking on the element to 
-			// appear centered
-			e.target.style.margin='0 12px 19px 0'
-			showDropdown(e.target);
-		}
-	});
+	timer.addEventListener("click", (e)=>{
+		e.preventDefault();
+		dropdownObject.handleClick(e.target);
+	}
+	)
+	// 	(e) => {
+	// 	if(dropdownObject.timeUnitElement) dropdownObject.timeUnitElement.style.margin = '0';
+	// 	if (e.target.closest(".time-unit")) {
+	// 		// this fixes the margin when clicking on the element to 
+	// 		// appear centered
+	// 		e.target.style.margin='0 12px 19px 0'
+	// 		dropdownObject.showDropdown(e.target);
+	// 		dropdownObject.timeUnitElement = e.target
+	// 	}
+	// });
+
 
 	// Toggle Off the dropdown when clicking outside the time-unit element
 	document.addEventListener("click", (e) => {
-		if (!e.target.classList.contains("time-unit") 
+		if (!e.target.closest(".time-unit") 
 			&& !dropdown.contains(e.target)) {
-			closeDropdown()
+			dropdownObject.closeDropdown();
 		}
 	});
 	
 	// Mouse Wheel functionality
-	timer.addEventListener("wheel", (e) => {
+	timer.addEventListener("wheel", (e)=>{
 		e.preventDefault();
-		if (activeElement) {
-			// activeElement will be set to our e.target 
-			// after clicking it the first time
-			let value = parseInt(activeElement.textContent);
-			let min = parseInt(activeElement.dataset.min);
-			let max = parseInt(activeElement.dataset.max);
-			// if user scrolls up, sets the previous value as 
-			// current_value else the next one 
-			value += e.deltaY < 0 ? -1 : 1;
-			if (value > max) value = min;
-			if (value < min) value = max;
-			activeElement.textContent = pad(value);
-			showDropdown(activeElement); // refresh dropdown
-		}
-	});
+		dropdownObject.handleWheel(e);
+	}
+);
 	
 	// Enter key functionality
 	document.addEventListener("keydown", (e) => {
-		if (e.key === "Enter" && activeElement) {
-			closeDropdown();
+		if (e.key === "Enter" && dropdownObject.timeUnitElement) {
+			dropdownObject.closeDropdown();
 		}
 	});
     
 	// Buttons Event listener
-	startBtn.addEventListener('click',startTimer.bind());
+	startBtn.addEventListener('click', startTimer.bind());
 	pauseBtn.addEventListener('click', timerObj.pauseTimer);
 	resetBtn.addEventListener('click', resetTimer);
 }

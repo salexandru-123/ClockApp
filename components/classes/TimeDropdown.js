@@ -6,17 +6,19 @@
  * 
  * WARNING: don't use it for other purposes.
  */
+import { pad } from "../functions.js";
 class TimeDropdown{
     dropdownElement; // set it to the dropdown block
     timeUnitElement; // set it to the current time-unit element
+    elementsContainer;
     /**
      * Constructor of TimeDropdown Object
-     * Requires: 
+     * 
+     * Required: 
      *  - dropdown container element
-     *  - active time-unit element
      * 
      */
-    constructor(dropdownContainerElement, activeTimeUnitElement) {
+    constructor(dropdownContainerElement, activeTimeUnitElement=null) {
         this.dropdownElement = dropdownContainerElement;
         this.timeUnitElement = activeTimeUnitElement;
     }
@@ -25,13 +27,21 @@ class TimeDropdown{
 		this.timeUnitElement = null
 		this.dropdownElement.style.display = "none";
     }
-    showDropdown(el){
+    /**Method to show the dropdown of the time-unit
+     * 
+     * Let empty to refer to already defined object paramenter
+     * 
+     * @param self.timeUnitElement will be modified if given an argument to the method.
+     * 
+     * @param el when Empty it refers to self.timeUnitElement
+     */
+    showDropdown(el = this.timeUnitElement){
         // Uncomment if you need these
 		// const type = el.dataset.type;
 		// const min = parseInt(el.dataset.min);
 		const max = parseInt(el.dataset.max);
 		const rect = el.getBoundingClientRect();
-		const containerRect = timer.getBoundingClientRect();
+		const containerRect = el.parentNode.getBoundingClientRect();
 		const current = parseInt(el.textContent);
 		this.dropdownElement.style.display = "inline-flex"; 
 		// distance between the container and the element left side
@@ -57,5 +67,33 @@ class TimeDropdown{
 			this.dropdownElement.appendChild(option);
 		}
 		this.timeUnitElement = el;
-    }
+    };
+    handleClick(e){
+        if(this.timeUnitElement) this.timeUnitElement.style.margin = '0';
+		if (e.closest(".time-unit")) {
+			// this fixes the margin when clicking on the element to 
+			// appear centered
+            this.showDropdown(e);
+			this.timeUnitElement.style.margin='0 12px 19px 0'
+			
+		}
+    };
+    handleWheel(e){
+        if (this.timeUnitElement) {
+			// activeElement will be set to our e.target 
+			// after clicking it the first time
+			let value = parseInt(this.timeUnitElement.textContent);
+			let min = parseInt(this.timeUnitElement.dataset.min);
+			let max = parseInt(this.timeUnitElement.dataset.max);
+			// if user scrolls up, sets the previous value as 
+			// current_value else the next one 
+			value += e.deltaY < 0 ? -1 : 1;
+			if (value > max) value = min;
+			if (value < min) value = max;
+			this.timeUnitElement.textContent = pad(value);
+			this.showDropdown(); // refresh dropdown
+		}
+    };
 }
+
+export default TimeDropdown;
