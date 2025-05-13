@@ -4,7 +4,9 @@
 # To-Do:
 	- Fix the timer so that the user can set multiple timers and stop
 		them independently
-	- Make a system to store the history of timers
+	- Make a system to store the history of timers:
+		- USE JSON TO STORE DATA IN THE LOCALSTORAGE
+		- LOOK IN CHATGPT HISTORY FOR MORE INFO
 	- Let the user reuse old timers and add a start pause and reset 
   		button on each of them
   
@@ -41,12 +43,25 @@ function htmlContent(_container){
 			
 			</article>
         </section>`
+	
 }
-
+function displayTimers(htmlContainer){
+	
+	for(let [key,value] of Object.entries(localStorage)){
+		if(String(key).startsWith('timer_history')){
+			const tempDiv = document.createElement('div');
+			tempDiv.classList.add('timer_history');
+			tempDiv.dataset.id = key;
+			tempDiv.dataset.time = value;
+			htmlContainer.insertAdjacentElement('beforeend', value);
+			count++;
+		}
+		
+	}
+}
 
 const Timer = function(container){
 	htmlContent(container)
-
 	// variables 
 
 	// Constants
@@ -65,30 +80,28 @@ const Timer = function(container){
 
 
 	// Functions
-
+	localStorage.clear()
+	displayTimers(timer);
 	// start timer functionality
 	// this method is used both for unpause and starting the timer
 	// FIX THIS TO HANDLE MULTIPLE TIMERS FROM THE HISTORY
-	function startTimer(){
+	function startNewTimer(){
 		let tempDiv,hours,minutes,seconds;
-		
-		
 		//	if there aren't any elements in the history
 		// 	create it with the chosen time 
 		// 	else get the time from the current element and start from there
-		if(timerHistory.childElementCount===0){
-			hours = hoursLabel.textContent;
-			minutes = minutesLabel.textContent;
-			seconds = secondsLabel.textContent;
-			tempDiv = document.createElement('div');
-			tempDiv.classList.add('timer_history--1');
-			timerHistory.insertAdjacentElement('beforeend', tempDiv)
-		}
-		else{
-			tempDiv = timerHistory.querySelector(`.timer_history--1`);
-			[hours, minutes, seconds] = tempDiv.textContent.split(':').map(val => Number(val));
-		}
+		// We need to add the new timer to local storage
+		hours = hoursLabel.textContent;
+		minutes = minutesLabel.textContent;
+		seconds = secondsLabel.textContent;
+		tempDiv = document.createElement('div');
+		tempDiv.classList.add('timer_history');
+		tempDiv.dataset.id=(localStorage.length)
+		
+		timerHistory.insertAdjacentElement('beforeend', tempDiv)
+		
 		const _time = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
+		localStorage.setItem(`timer_history-${localStorage.length}`,_time)
 		timerObj.time = _time;
 		timerObj.element = tempDiv;
 		// we pass in the start,pause btn element to dynamically switch them
@@ -111,19 +124,13 @@ const Timer = function(container){
 		e.preventDefault();
 		dropdownObject.handleClick(e.target);
 	}
-	)
-	// 	(e) => {
-	// 	if(dropdownObject.timeUnitElement) dropdownObject.timeUnitElement.style.margin = '0';
-	// 	if (e.target.closest(".time-unit")) {
-	// 		// this fixes the margin when clicking on the element to 
-	// 		// appear centered
-	// 		e.target.style.margin='0 12px 19px 0'
-	// 		dropdownObject.showDropdown(e.target);
-	// 		dropdownObject.timeUnitElement = e.target
-	// 	}
-	// });
-
-
+	);
+	// Mouse Wheel functionality
+	timer.addEventListener("wheel", (e)=>{
+		e.preventDefault();
+		dropdownObject.handleWheel(e);
+	}
+	);
 	// Toggle Off the dropdown when clicking outside the time-unit element
 	document.addEventListener("click", (e) => {
 		if (!e.target.closest(".time-unit") 
@@ -131,23 +138,14 @@ const Timer = function(container){
 			dropdownObject.closeDropdown();
 		}
 	});
-	
-	// Mouse Wheel functionality
-	timer.addEventListener("wheel", (e)=>{
-		e.preventDefault();
-		dropdownObject.handleWheel(e);
-	}
-);
-	
 	// Enter key functionality
 	document.addEventListener("keydown", (e) => {
 		if (e.key === "Enter" && dropdownObject.timeUnitElement) {
 			dropdownObject.closeDropdown();
 		}
 	});
-    
 	// Buttons Event listener
-	startBtn.addEventListener('click', startTimer.bind());
+	startBtn.addEventListener('click', startNewTimer);
 	pauseBtn.addEventListener('click', timerObj.pauseTimer);
 	resetBtn.addEventListener('click', resetTimer);
 }
