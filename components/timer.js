@@ -77,12 +77,14 @@ const Timer = function(container){
 		minutes = minutesLabel.textContent;
 		seconds = secondsLabel.textContent;
 		
-		const tempTimerObj = new Countdown();
+		const tempTimerObj = new Countdown().countdown();
+		
 		const timeInSecs = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
-		tempTimerObj.time = timeInSecs;
 		timerHistory.insertAdjacentHTML('beforeend',
 			`
-				<div class='timer-history' id='timer--${timers.length}'></div>
+				<div class='timer-history' id='timer--${timers.length}'>
+					<div>${tempTimerObj}</div>
+				</div>
 			`)
 
 	}
