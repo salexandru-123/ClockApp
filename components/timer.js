@@ -33,60 +33,42 @@ function htmlContent(_container){
             </article>
 
             <article id='timer-buttons'>
-                <button name="start" class="app__btn" id="start__timer">&#10148;</button>
-                
+                <button name="add" class="app__btn" id="add__timer">&#10148;</button>
+            </article>
+			<article id='timers-history'>
+				<!--
 				<button name="pause" class="app__btn hidden" id="pause__timer">&#8214;</button>
 
 				<button name="reset" class="app__btn" id="reset__timer">&#8634;</button>
-            </article>
-			<article id='timers-history'>
-			
+				-->
 			</article>
         </section>`
 	
 }
-function displayTimers(htmlContainer){
-	
-	for(let [key,value] of Object.entries(localStorage)){
-		if(String(key).startsWith('timer_history')){
-			const tempDiv = document.createElement('div');
-			tempDiv.classList.add('timer_history');
-			tempDiv.dataset.id = key;
-			tempDiv.dataset.time = value;
-			htmlContainer.insertAdjacentElement('beforeend', value);
-			count++;
-		}
-		
-	}
-}
-
 const Timer = function(container){
 	htmlContent(container)
 	// variables 
 
 	// Constants
 	
-	const timerObj = new Countdown();
 	const timer = document.getElementById("timer");
 	const dropdown = document.getElementById("dropdown");
 	const timerHistory = document.getElementById('timers-history');
-	const startBtn = document.getElementById('start__timer');
-	const resetBtn = document.getElementById('reset__timer');
-	const pauseBtn = document.getElementById('pause__timer');
+	const addBtn = document.getElementById('add__timer');
 	const [hoursLabel, minutesLabel, secondsLabel] = [...timer.querySelectorAll('.time-unit')]
 	
 	// Dynamic
 	let dropdownObject = new TimeDropdown(dropdown);
+	let timers = [];
 
 
 	// Functions
-	localStorage.clear()
-	displayTimers(timer);
+	
 	// start timer functionality
 	// this method is used both for unpause and starting the timer
 	// FIX THIS TO HANDLE MULTIPLE TIMERS FROM THE HISTORY
-	function startNewTimer(){
-		let tempDiv,hours,minutes,seconds;
+	function addNewTimer(){
+		let hours,minutes,seconds;
 		//	if there aren't any elements in the history
 		// 	create it with the chosen time 
 		// 	else get the time from the current element and start from there
@@ -94,27 +76,18 @@ const Timer = function(container){
 		hours = hoursLabel.textContent;
 		minutes = minutesLabel.textContent;
 		seconds = secondsLabel.textContent;
-		tempDiv = document.createElement('div');
-		tempDiv.classList.add('timer_history');
-		tempDiv.dataset.id=(localStorage.length)
 		
-		timerHistory.insertAdjacentElement('beforeend', tempDiv)
-		
-		const _time = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
-		localStorage.setItem(`timer_history-${localStorage.length}`,_time)
-		timerObj.time = _time;
-		timerObj.element = tempDiv;
-		// we pass in the start,pause btn element to dynamically switch them
-		timerObj.startTimer(startBtn, pauseBtn);
+		const tempTimerObj = new Countdown();
+		const timeInSecs = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
+		tempTimerObj.time = timeInSecs;
+		timerHistory.insertAdjacentHTML('beforeend',
+			`
+				<div class='timer-history' id='timer--${timers.length}'></div>
+			`)
+
 	}
 
-	// reset timer functionality
-	const resetTimer = function(){
-		const timerElement = timerHistory.querySelector('.timer_history--1');	
-		timerObj.element = timerElement;
-		timerObj.resetTimer();
-		
-	}
+	
 	// ------------------------------
 
 	// Event Listeners
@@ -145,8 +118,6 @@ const Timer = function(container){
 		}
 	});
 	// Buttons Event listener
-	startBtn.addEventListener('click', startNewTimer);
-	pauseBtn.addEventListener('click', timerObj.pauseTimer);
-	resetBtn.addEventListener('click', resetTimer);
+	addBtn.addEventListener('click', addNewTimer);
 }
 export default Timer;
