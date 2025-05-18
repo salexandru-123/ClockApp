@@ -25,6 +25,9 @@ const formatHour = function(date, short = false){ //typeof date === Date
     }
     return str
 }
+const formatSeconds = function(secs){
+    return new Date(secs*1000).toISOString().slice(11,19);
+}
 const hoursToSec = function(hours){
     return Number(hours)*60*60
 }
@@ -41,5 +44,6 @@ export {
     formatHour,
     minToSec,
     hoursToSec,
-    pad
+    pad,
+    formatSeconds,
 }

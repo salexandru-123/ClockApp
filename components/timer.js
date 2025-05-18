@@ -78,27 +78,13 @@ const Timer = function(container){
 		seconds = secondsLabel.textContent;
 		const timeInSecs = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
 		
-		const tempTimerObj = new Countdown();
-		tempTimerObj.idOfTimer = timers.length;
-		tempTimerObj.isRunning = true;
-		tempTimerObj.startingTime = tempTimerObj.remainingTime = timeInSecs;
-		tempTimerObj.htmlContent = `
-		<div class='timer-history' id='timer--${tempTimerObj.idOfTimer}'>
-			<span class='timer-time'>00:00:00</span>
-			<button class='timer-start'>&#10148;</button>
-			<button class='timer-pause'>&#8214;</button>
-			<button class='timer-reset'>&#8634;</button>
-		</div>`;
-		timers.push(JSON.stringify({
-			id: tempTimerObj.idOfTimer,
-			running: tempTimerObj.isRunning,
-			startTime: tempTimerObj.startingTime,
-			remainingTime: tempTimerObj.remainingTime,
-		}));
-		console.log(timers);
+		const tempTimerObj = new Countdown(timers.length, true, timeInSecs);
 		
-		timerHistory.insertAdjacentHTML('beforeend',tempTimerObj.htmlContent)
-
+		console.log(localStorage.getItem('timers'));
+		timers.push(tempTimerObj);
+		localStorage.setItem('timers', JSON.stringify(timers));
+		timerHistory.appendChild(tempTimerObj.htmlContent)
+		tempTimerObj.startTimer();
 	}
 
 	
