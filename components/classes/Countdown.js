@@ -41,11 +41,9 @@ class Countdown{
 			alert(`Timer ${this.idOfTimer} has completed.`)
 			return
 		}
-		console.log(this.remainingTime);
-		console.log(this);
 		
 		this.timeElement.innerHTML = formatSeconds(this.remainingTime);
-		this.remainingTime = Number(this.remainingTime) - 1;
+		this.remainingTime--;
 	}
 	pauseTimer(){
 		clearInterval(timer)
@@ -53,13 +51,13 @@ class Countdown{
 	resetTimer(){
 		this.remainingTime = this.startingTime;
 		clearInterval(timer);
-		this.countdownTimer();
-		timer = setInterval(this.countdownTimer, 1000);
+		this.countdownTimer.bind(this);
+		timer = setInterval(this.countdownTimer.bind(this), 1000);
 	}
 	startTimer(){
-		
-		this.countdownTimer();
-		timer = setInterval(this.countdownTimer, 1000);
+		this.remainingTime--;
+		this.countdownTimer.bind(this);
+		timer = setInterval(this.countdownTimer.bind(this), 1000);
 	}
 }
 export default Countdown;
