@@ -5,8 +5,8 @@
 	- Fix the timer so that the user can set multiple timers and stop
 		them independently
 	- Make a system to store the history of timers:
-		- USE JSON TO STORE DATA IN THE LOCALSTORAGE
-		- LOOK IN CHATGPT HISTORY FOR MORE INFO
+		- USE JSON TO STORE DATA IN THE LOCALSTORAGE V
+		- LOOK IN CHATGPT HISTORY FOR MORE INFO V
 	- Let the user reuse old timers and add a start pause and reset 
   		button on each of them
   
@@ -60,10 +60,7 @@ const Timer = function(container){
 	// Dynamic
 	let dropdownObject = new TimeDropdown(dropdown);
 	let timers = [];
-
-
 	// Functions
-	
 	// start timer functionality
 	// this method is used both for unpause and starting the timer
 	// FIX THIS TO HANDLE MULTIPLE TIMERS FROM THE HISTORY
@@ -72,22 +69,29 @@ const Timer = function(container){
 		//	if there aren't any elements in the history
 		// 	create it with the chosen time 
 		// 	else get the time from the current element and start from there
-		// We need to add the new timer to local storage
 		hours = hoursLabel.textContent;
 		minutes = minutesLabel.textContent;
 		seconds = secondsLabel.textContent;
 		const timeInSecs = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
 		
-		const tempTimerObj = new Countdown(timers.length, true, timeInSecs);
+		const tempTimerObj = new Countdown(timers.length, true, timeInSecs, timerHistory);
 		
 		console.log(localStorage.getItem('timers'));
 		timers.push(tempTimerObj);
 		localStorage.setItem('timers', JSON.stringify(timers));
-		timerHistory.appendChild(tempTimerObj.htmlContent)
+		console.log(localStorage.getItem('timers'));
+		
 		tempTimerObj.startTimer();
 	}
-
 	
+	function renderTimers(){
+		if(localStorage.getItem('timers')){
+			timers = JSON.parse(localStorage.getItem('timers')).map(object=>new Countdown(object.id, object.isRunning, object.startingTime, timerHistory, object.remainingTime));
+		}
+		
+		
+	}
+	renderTimers()
 	// ------------------------------
 
 	// Event Listeners
