@@ -45,6 +45,14 @@ function htmlContent(_container){
         </section>`
 	
 }
+function renderTimers(array){
+	if(localStorage.getItem('timers')){
+		return JSON.parse(localStorage.getItem('timers')).map(object=>new Countdown(object.id, object.isRunning, object.startingTime, timerHistory, object.remainingTime));			
+	}
+}
+function saveTimers(array){
+	localStorage.setItem('timers', JSON.stringify(array));
+}
 const Timer = function(container){
 	htmlContent(container)
 	// variables 
@@ -64,6 +72,15 @@ const Timer = function(container){
 	// start timer functionality
 	// this method is used both for unpause and starting the timer
 	// FIX THIS TO HANDLE MULTIPLE TIMERS FROM THE HISTORY
+	function handleTimerAction(e){
+		
+		const clicked = e.target;
+		if(!clicked.classList.contains('history-btn')) return
+		if(e.target.classList.contains('timer-pause')){
+			saveTimers()
+			
+		}
+	}
 	function addNewTimer(){
 		let hours,minutes,seconds;
 		//	if there aren't any elements in the history
@@ -74,23 +91,13 @@ const Timer = function(container){
 		seconds = secondsLabel.textContent;
 		const timeInSecs = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
 		
-		const tempTimerObj = new Countdown(timers.length, true, timeInSecs, timerHistory);
-		
-		console.log(localStorage.getItem('timers'));
-		timers.push(tempTimerObj);
-		localStorage.setItem('timers', JSON.stringify(timers));
-		console.log(localStorage.getItem('timers'));
-		
-		tempTimerObj.startTimer();
+		timers.push(new Countdown(timers.length, true, timeInSecs, timerHistory));
+		saveTimers(timers);
+		timerHistory.innerHTML = ''
+		timers = renderTimers()
 	}
 	
-	function renderTimers(){
-		if(localStorage.getItem('timers')){
-			timers = JSON.parse(localStorage.getItem('timers')).map(object=>new Countdown(object.id, object.isRunning, object.startingTime, timerHistory, object.remainingTime));
-		}
-		
-		
-	}
+	
 	renderTimers()
 	// ------------------------------
 
@@ -123,5 +130,9 @@ const Timer = function(container){
 	});
 	// Buttons Event listener
 	addBtn.addEventListener('click', addNewTimer);
+	timerHistory.addEventListener('click', e=>{
+		e.preventDefault();
+		handleTimerAction(e);
+	})
 }
 export default Timer;

@@ -28,9 +28,9 @@ class Countdown{
 		this.htmlContent.id = `timer--${this.id}`;
 		this.htmlContent.innerHTML = `
 			<span class='timer-time'>${new Date(this.remainingTime*1000).toISOString().slice(11,19)}</span>
-			<button class='timer-start'>&#10148;</button>
-			<button class='timer-pause'>&#8214;</button>
-			<button class='timer-reset'>&#8634;</button>
+			<button class='timer-start history-btn'>&#10148;</button>
+			<button class='timer-pause history-btn'>&#8214;</button>
+			<button class='timer-reset history-btn'>&#8634;</button>
 		`
 		this.elementContainer.appendChild(this.htmlContent);
 		this.startBtn = this.htmlContent.querySelector('.timer-start');
@@ -52,6 +52,8 @@ class Countdown{
 	}
 	// We have to remake the class to adapt to timer history integration.
 	countdownTimer(){
+		console.log(this.remainingTime);
+		
 		this.timeElement.innerHTML = formatSeconds(this.remainingTime);
 		this.remainingTime--;
 		if(this.remainingTime === 0){
