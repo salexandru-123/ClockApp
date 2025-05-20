@@ -45,10 +45,13 @@ function htmlContent(_container){
         </section>`
 	
 }
-function renderTimers(array){
-	if(localStorage.getItem('timers')){
-		return JSON.parse(localStorage.getItem('timers')).map(object=>new Countdown(object.id, object.isRunning, object.startingTime, timerHistory, object.remainingTime));			
+function renderTimers(container){
+	
+	if(!['undefined', null].includes(localStorage.getItem('timers'))){
+
+		return JSON.parse(localStorage.getItem('timers')).map(object=>new Countdown(object.id, object.isRunning, object.startingTime, container, object.remainingTime));			
 	}
+	return []
 }
 function saveTimers(array){
 	localStorage.setItem('timers', JSON.stringify(array));
@@ -73,13 +76,22 @@ const Timer = function(container){
 	// this method is used both for unpause and starting the timer
 	// FIX THIS TO HANDLE MULTIPLE TIMERS FROM THE HISTORY
 	function handleTimerAction(e){
-		
 		const clicked = e.target;
 		if(!clicked.classList.contains('history-btn')) return
-		if(e.target.classList.contains('timer-pause')){
-			saveTimers()
-			
+		if(clicked.classList.contains('countdown-pause')){
+			saveTimers(timers)
 		}
+		if(clicked.classList.contains('countdown-reset')){
+			saveTimers(timers)
+		}
+		if(clicked.classList.contains('countdown-start')){
+			saveTimers(timers)
+		}
+		if(clicked.classList.contains('countdown-delete')){
+			saveTimers(timers)
+			renderTimers(timerHistory)
+		}
+
 	}
 	function addNewTimer(){
 		let hours,minutes,seconds;
@@ -92,13 +104,11 @@ const Timer = function(container){
 		const timeInSecs = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
 		
 		timers.push(new Countdown(timers.length, true, timeInSecs, timerHistory));
+		
+		
 		saveTimers(timers);
-		timerHistory.innerHTML = ''
-		timers = renderTimers()
 	}
-	
-	
-	renderTimers()
+	timers = renderTimers(timerHistory)
 	// ------------------------------
 
 	// Event Listeners
