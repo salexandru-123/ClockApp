@@ -12,7 +12,7 @@
   
 
 */
-import { hoursToSec, minToSec, pad} from "./functions.js";
+import { hoursToSec, minToSec, pad, saveCountdowns, renderCountdowns} from "./functions.js";
 import Countdown from "./classes/Countdown.js";
 import TimeDropdown from "./classes/TimeDropdown.js"
 function htmlContent(_container){
@@ -45,17 +45,7 @@ function htmlContent(_container){
         </section>`
 	
 }
-function renderTimers(container){
-	
-	if(!['undefined', null].includes(localStorage.getItem('timers'))){
 
-		return JSON.parse(localStorage.getItem('timers')).map(object=>new Countdown(object.id, object.isRunning, object.startingTime, container, object.remainingTime));			
-	}
-	return []
-}
-function saveTimers(array){
-	localStorage.setItem('timers', JSON.stringify(array));
-}
 const Timer = function(container){
 	htmlContent(container)
 	// variables 
@@ -79,17 +69,18 @@ const Timer = function(container){
 		const clicked = e.target;
 		if(!clicked.classList.contains('history-btn')) return
 		if(clicked.classList.contains('countdown-pause')){
-			saveTimers(timers)
+			saveCountdowns(timers, 'timers')
 		}
 		if(clicked.classList.contains('countdown-reset')){
-			saveTimers(timers)
+			saveCountdowns(timers, 'timers')
 		}
 		if(clicked.classList.contains('countdown-start')){
-			saveTimers(timers)
+			saveCountdowns(timers, 'timers')
 		}
-		if(clicked.classList.contains('countdown-delete')){
-			saveTimers(timers)
-			renderTimers(timerHistory)
+		if(clicked.classList.contains('countdown-remove')){
+			
+			saveCountdowns(timers, 'timers')
+			renderCountdowns(timerHistory, 'timers')
 		}
 
 	}
@@ -106,9 +97,9 @@ const Timer = function(container){
 		timers.push(new Countdown(timers.length, true, timeInSecs, timerHistory));
 		
 		
-		saveTimers(timers);
+		saveCountdowns(timers,'timers');
 	}
-	timers = renderTimers(timerHistory)
+	timers = renderCountdowns(timerHistory, 'timers')
 	// ------------------------------
 
 	// Event Listeners
@@ -145,4 +136,5 @@ const Timer = function(container){
 		handleTimerAction(e);
 	})
 }
+export {renderCountdowns}
 export default Timer;

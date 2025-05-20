@@ -1,5 +1,8 @@
 import { formatHour, pad, minToSec, hoursToSec } from "./functions.js";
 import TimeDropdown from "./classes/TimeDropdown.js";
+import { renderCountdowns, saveCountdowns} from "./functions.js";
+import Countdown from "./classes/Countdown.js";
+
 const Alarm = function(container){
     container.innerHTML = 
         `<section id="feature--3" class="app__feature" data-sect="3">
@@ -12,12 +15,13 @@ const Alarm = function(container){
 				<div id="dropdown"></div>
             </article>
             <article id="alarm-setter">
-                <button class='app__btn' id='alarm__start'>&#10148;</button>
-                <button class='app__btn hidden' id='alarm__pause'>&#8214;</button>
-                <button class='app__btn' id='alarm__reset'>&#8634;</button>
+                <button class='app__btn' id='alarm__add'>&#10148;</button>
             </article>
             <article id='alarms-container'>
-                
+                <!--
+                <button class='app__btn hidden' id='alarm__pause'>&#8214;</button>
+                <button class='app__btn' id='alarm__reset'>&#8634;</button>
+                -->
             </article>
         </section>`
     // --------------------
@@ -36,25 +40,45 @@ const Alarm = function(container){
     const alarm = document.getElementById('alarm-setter');
     const dropdown = document.getElementById('dropdown');
     const alarmsHistory = document.getElementById('alarms-container');
-    const startBtn = document.getElementById('alarm__start');
-    const pauseBtn = document.getElementById('alarm__pause');
-    const resetBtn = document.getElementById('alarm__reset');
+    const addBtn = document.getElementById('alarm__add');
     const [hoursLabel, minutesLabel] = [...alarm.querySelectorAll('.time-unit')]
-
+    
     // Dynamic
 	let dropdownObject = new TimeDropdown(dropdown);
+    let alarms = []
+    let alarmInterval;
+    renderCountdowns(alarmsHistory, 'alarms')
+    // Functions
+    const waitForAlarm = function(alarmTime, interval){
+        const hour = new Date().setHours(alarmTime.slice(0,2), alarmTime.slice(3,5))
+        
+        const hourISOFormat = String(new Date(hour).toISOString().slice(11,16));
+        console.log('in the interval');
+        
+        if(hourISOFormat === String(new Date().toISOString().slice(11,16))){
+            console.log('inside:',alarmTime);
+            
+            alert('alarm alarm alarm!')
+            clearInterval(interval);
+        }
+    }
+    const addAlarm = function(e){
+        const alarm_hour = hoursLabel.textContent+':'+minutesLabel.textContent;
+        
+        alarmInterval = setInterval(()=>waitForAlarm(alarm_hour, alarmInterval) ,1000)
+        alarms.push({
+            id: alarms.length,
+            hour: alarm_hour,
+            loop: false,
+            running: true,
+            timer: alarmInterval,
+        });
+        saveCountdowns(alarms,'alarms');
+    }
+    
+    addBtn.addEventListener('click',addAlarm)
 
-    const startAlarm = function(e){
-        startBtn.classList.toggle('hidden');
-        pauseBtn.classList.toggle('hidden');
-    }
-    const pauseAlarm = function(e){
-        startBtn.classList.toggle('hidden');
-        pauseBtn.classList.toggle('hidden');
-    }
-    const resetAlarm = function(e){
 
-    }
     document.addEventListener('keydown', (e)=>{
         if(e.key ==='Enter' && dropdownObject.timeUnitElement){
             dropdownObject.closeDropdown()
@@ -74,8 +98,5 @@ const Alarm = function(container){
         e.preventDefault()
         dropdownObject.handleWheel(e);
     })
-    startBtn.addEventListener('click',startAlarm)
-    pauseBtn.addEventListener('click',pauseAlarm)
-    resetBtn.addEventListener('click',resetAlarm)
-}
+    }
 export default Alarm;
