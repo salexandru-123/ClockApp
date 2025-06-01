@@ -9,6 +9,8 @@ const Clock = function (container) {
     const clockElement = container.querySelector('.app__clock');
     const _clock = setInterval(
         ()=>{
+            // display the clock each second
+            // only if the active tab is the clock tab
             clockElement.innerHTML = `<span>${formatHour(new Date())}</span>`
             if(document.querySelector('.active__tab').dataset.id != '1') 
                 clearInterval(_clock)

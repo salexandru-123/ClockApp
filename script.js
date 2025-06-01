@@ -2,7 +2,9 @@ import {app} from './components/index.js'
 const nav = document.querySelector('nav');
 const tabs = document.querySelectorAll('.app__tab');
 const mainSection = document.querySelector('main');
-app.get(1)(mainSection);
+
+
+app.get(2)(mainSection);
     
 
 nav.addEventListener('click', function(e){
@@ -16,6 +18,8 @@ nav.addEventListener('click', function(e){
     if(mainSection.childNodes != null){
         mainSection.removeChild(currSection);
     }
+    // This gets the id from the data-id attribute of the button clicked
+    // and gives the function the main section as an argument
     app.get(Number(tabIndex))(mainSection);
     
     // make the current active tab button change style
