@@ -45,14 +45,7 @@ function htmlContent(_container){
         </section>`
 	
 }
-function displayTimers(htmlContainer){
-	for(let [key,value] of Object.entries(localStorage)){
-		if(String(key).startsWith('timer_history')){
-			new TimerCountdown(id, htmlContainer, value);
-		}
-		
-	}
-}
+
 
 const Timer = function(container){
 	let timers = [];
@@ -65,8 +58,6 @@ const Timer = function(container){
 	const dropdown = document.getElementById("dropdown");
 	const timerHistory = document.getElementById('timers-history');
 	const startBtn = document.getElementById('start__timer');
-	const resetBtn = document.getElementById('reset__timer');
-	const pauseBtn = document.getElementById('pause__timer');
 	const [hoursLabel, minutesLabel, secondsLabel] = [...timer.querySelectorAll('.time-unit')]
 	
 	// Dynamic
@@ -74,25 +65,37 @@ const Timer = function(container){
 
 
 	// Functions
-	localStorage.clear()
-	displayTimers(timer);
-	// start timer functionality
-	// this method is used both for unpause and starting the timer
-	// FIX THIS TO HANDLE MULTIPLE TIMERS FROM THE HISTORY
+
 	function startNewTimer(){
-		//	if there aren't any elements in the history
-		// 	create it with the chosen time 
-		// 	else get the time from the current element and start from there
-		// We need to add the new timer to local storage
 		const _time = hoursToSec( hoursLabel.textContent) + minToSec(minutesLabel.textContent) + Number(secondsLabel.textContent);
-		
-		const timerObj = new TimerCountdown(localStorage.length, container, _time);
+		if(!_time) return
+
+		const timerObj = new TimerCountdown(timers.length, timerHistory, _time);
 		timers.push(timerObj)
-		// localStorage.setItem(`timers_history`,timers)
-		// we pass in the start,pause btn element to dynamically switch them
 		timerObj.startTimer();
+		saveTimers();
+	}
+	function displayTimers(){
+		console.log(JSON.parse(localStorage.getItem('timers')));
+		
+		if(!JSON.parse(localStorage.getItem('timers'))) return;
+		
+		timers = JSON.parse(localStorage.getItem('timers')).map((obj)=>new TimerCountdown(obj.Id, timerHistory, obj.time))
+
+	}
+	
+	displayTimers();
+	
+	function saveTimers(){
+		
+		localStorage.setItem('timers', JSON.stringify(timers));
 	}
 
+	function deleteTimer(id){
+		timers.splice(id, 1);
+		console.log(timers);
+		saveTimers();
+	}
 	// ------------------------------
 
 	// Event Listeners
@@ -124,5 +127,13 @@ const Timer = function(container){
 	});
 	// Buttons Event listener
 	startBtn.addEventListener('click', startNewTimer);
-}
+	timerHistory.addEventListener('click', function(e){
+		e.preventDefault()
+		const clicked = e.target.closest('.delete-timer-btn');
+		console.log(e.target);
+		
+		if(!clicked) return;
+		deleteTimer(e.target.closest('.timer_history').id);
+	})
+}	
 export default Timer;

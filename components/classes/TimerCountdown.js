@@ -1,12 +1,14 @@
+
+
 /**This is a Countdown Class for the timer
  * 
  */
 class TimerCountdown{
-	id;
+	#id;
 	time;
 	
 	timer;
-	timeTemp = this.time;
+	remainingTime = this.time;
 	elementsContainer;
 	element;
 	startBtn;
@@ -25,15 +27,15 @@ class TimerCountdown{
 	 */
 	constructor(id, mainContainer, time ) {
 		this.time = time;
-		this.timeTemp = time;
-
+		this.remainingTime = time;
+		this.#id = id
 		this.elementsContainer = document.createElement('div');
 		this.elementsContainer.id = id
 		this.elementsContainer.className='timer_history', 
 		this.elementsContainer.innerHTML=`
 			<span class='timer-span'></span>
 			<button class='start-timer-btn'>></button>
-			<button class='pause-timer-btn'>P</button>
+			<button class='pause-timer-btn hidden'>P</button>
 			<button class='reset-timer-btn'>R</button>
 			<button class='delete-timer-btn'>X</button>
 		`
@@ -46,20 +48,28 @@ class TimerCountdown{
 		this.deleteBtn =  this.elementsContainer.querySelector('.delete-timer-btn');
 		
 		this.#updateTimerElement()
-		console.log(this.elementsContainer.innerHTML);
 		
 		this.startBtn.addEventListener('click', this.startTimer.bind(this))
 		this.pauseBtn.addEventListener('click', this.pauseTimer.bind(this))
 		this.resetBtn.addEventListener('click', this.resetTimer.bind(this))
 		this.deleteBtn.addEventListener('click', this.deleteTimer.bind(this))
 	}
+
+	get Id(){return this.#id;}
+
+
+	#toggleButtons(){
+		this.startBtn.classList.toggle('hidden');
+		this.pauseBtn.classList.toggle('hidden');
+	}
+
 	#updateTimerElement(){
 			
-			this.hours = String(Math.floor(this.timeTemp / 60 / 60)).padStart(2, '0');
-			this.minutes = String(Math.floor(this.timeTemp / 60)).padStart(2, '0');
-			this.seconds = String(this.timeTemp % 60).padStart(2, '0');
+			this.hours = String(Math.floor(this.remainingTime / 60 / 60)).padStart(2, '0');
+			this.minutes = String(Math.floor(this.remainingTime / 60 % 60)).padStart(2, '0');
+			this.seconds = String(this.remainingTime % 60).padStart(2, '0');
 			this.element.innerHTML = `${this.hours}:${this.minutes}:${this.seconds}`
-		}
+	}
 	/**Countdown Method of Object Countdown
 	 * 
 	 * **Return:** 
@@ -69,7 +79,7 @@ class TimerCountdown{
 	 * Usage: Used together with an interval.
 	 * 
 	 * Required parameters: 
-	 *  - @param timeTemp 
+	 *  - @param remainingTime 
 	 * 	- @param time 
 	 * 	- @param element 
 	 * 	- @param startBtn 
@@ -78,45 +88,41 @@ class TimerCountdown{
 	 */
 	
 	countdown(){
-		if(this.timeTemp===null ) this.timeTemp = this.time
+		if(this.remainingTime===null ) this.remainingTime = this.time
 		this.#updateTimerElement()
 
-		if (this.timeTemp === 0) {
+		if (this.remainingTime === 0) {
 			clearInterval(this.timer);
-			this.startBtn.classList.remove('hidden');
-			this.pauseBtn.classList.add('hidden');
+			this.#toggleButtons()
 			alert('Timer ended!')
 			return true
 		}
-		this.timeTemp--;
+		this.remainingTime--;
 	};
+
 	deleteTimer(){
+		clearInterval(this.timer);
 		this.elementsContainer.parentNode.removeChild(this.elementsContainer);
 	}
+
 	resetTimer(){
-		this.timeTemp = this.time;
-		console.log(this.time);
-		
+		if(this.pauseBtn.classList.contains('hidden')) this.#toggleButtons()
+		this.remainingTime = this.time;
 		clearInterval(this.timer);
 		this.timer = setInterval(this.countdown.bind(this), 1000);
 	};
+
 	pauseTimer(){
-		this.startBtn.classList.remove('hidden');
-		this.pauseBtn.classList.add('hidden');
+		this.#toggleButtons()
 		clearInterval(this.timer);
 	};
+
 	startTimer(){
+		this.#toggleButtons()
 		
-		this.startBtn.classList.add('hidden');
-		this.pauseBtn.classList.remove('hidden');
-		
-		// call the countdown once before the interval to avoid 
+		// remove 1 sec from remainingTime to avoid 
 		// 1 second delay
-		if(!this.startBtn&&!this.pauseBtn){
-		return console.log('No start button or pause buttn');
-		
-	}
-		this.timeTemp--
+		this.remainingTime--
 		this.timer= setInterval(this.countdown.bind(this), 1000);
 	}
 }
