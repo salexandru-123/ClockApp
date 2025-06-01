@@ -13,7 +13,7 @@
 
 */
 import { hoursToSec, minToSec, pad} from "./functions.js";
-import Countdown from "./classes/Countdown.js";
+import TimerCountdown from "./classes/TimerCountdown.js";
 import TimeDropdown from "./classes/TimeDropdown.js"
 function htmlContent(_container){
 	// load dynamic html
@@ -46,27 +46,21 @@ function htmlContent(_container){
 	
 }
 function displayTimers(htmlContainer){
-	
 	for(let [key,value] of Object.entries(localStorage)){
 		if(String(key).startsWith('timer_history')){
-			const tempDiv = document.createElement('div');
-			tempDiv.classList.add('timer_history');
-			tempDiv.dataset.id = key;
-			tempDiv.dataset.time = value;
-			htmlContainer.insertAdjacentElement('beforeend', value);
-			count++;
+			new TimerCountdown(id, htmlContainer, value);
 		}
 		
 	}
 }
 
 const Timer = function(container){
+	let timers = [];
 	htmlContent(container)
 	// variables 
 
 	// Constants
 	
-	const timerObj = new Countdown();
 	const timer = document.getElementById("timer");
 	const dropdown = document.getElementById("dropdown");
 	const timerHistory = document.getElementById('timers-history');
@@ -86,35 +80,19 @@ const Timer = function(container){
 	// this method is used both for unpause and starting the timer
 	// FIX THIS TO HANDLE MULTIPLE TIMERS FROM THE HISTORY
 	function startNewTimer(){
-		let tempDiv,hours,minutes,seconds;
 		//	if there aren't any elements in the history
 		// 	create it with the chosen time 
 		// 	else get the time from the current element and start from there
 		// We need to add the new timer to local storage
-		hours = hoursLabel.textContent;
-		minutes = minutesLabel.textContent;
-		seconds = secondsLabel.textContent;
-		tempDiv = document.createElement('div');
-		tempDiv.classList.add('timer_history');
-		tempDiv.dataset.id=(localStorage.length)
+		const _time = hoursToSec( hoursLabel.textContent) + minToSec(minutesLabel.textContent) + Number(secondsLabel.textContent);
 		
-		timerHistory.insertAdjacentElement('beforeend', tempDiv)
-		
-		const _time = hoursToSec(hours) + minToSec(minutes) + Number(seconds);
-		localStorage.setItem(`timer_history-${localStorage.length}`,_time)
-		timerObj.time = _time;
-		timerObj.element = tempDiv;
+		const timerObj = new TimerCountdown(localStorage.length, container, _time);
+		timers.push(timerObj)
+		// localStorage.setItem(`timers_history`,timers)
 		// we pass in the start,pause btn element to dynamically switch them
-		timerObj.startTimer(startBtn, pauseBtn);
+		timerObj.startTimer();
 	}
 
-	// reset timer functionality
-	const resetTimer = function(){
-		const timerElement = timerHistory.querySelector('.timer_history--1');	
-		timerObj.element = timerElement;
-		timerObj.resetTimer();
-		
-	}
 	// ------------------------------
 
 	// Event Listeners
@@ -146,7 +124,5 @@ const Timer = function(container){
 	});
 	// Buttons Event listener
 	startBtn.addEventListener('click', startNewTimer);
-	pauseBtn.addEventListener('click', timerObj.pauseTimer);
-	resetBtn.addEventListener('click', resetTimer);
 }
 export default Timer;

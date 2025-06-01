@@ -33,3 +33,7 @@
   gap:.5rem;
 }
 
+.timer-history span{
+  color: black;
+  font-size: 1rem;
+}
