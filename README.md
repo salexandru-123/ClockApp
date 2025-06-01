@@ -14,7 +14,7 @@
 - **Make the alarm functionality**
 - **Make the chronometer functionality**
 - **Add some cool styling to the app**
-- **Create a history system for timer,alarm and chronometer section to improve reusability**
+- **Create a history system for alarm and chronometer section to improve reusability**
 - **Clean the code and improve speed to improve time precision**
 
 ### Technology used:
