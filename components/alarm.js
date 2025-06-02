@@ -81,6 +81,8 @@ const Alarm = function(container){
         dropdownObject.handleWheel(e);
     })
     startBtn.addEventListener('click',startNewAlarm)
-    
+    alarmsHistory.addEventListener('click', function(e){
+        
+    })
 }
 export default Alarm;
