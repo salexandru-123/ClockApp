@@ -1,4 +1,5 @@
-import { formatHour, pad, minToSec, hoursToSec } from "./functions.js";
+import { saveInLocalStorage } from "./functions.js";
+import AlarmCl from "./classes/Alarm.js";
 import TimeDropdown from "./classes/TimeDropdown.js";
 const Alarm = function(container){
     container.innerHTML = 
@@ -10,11 +11,9 @@ const Alarm = function(container){
 				<div class="time-unit" data-type="minutes" data-max="59" data-min="0">00</div>
                 
 				<div id="dropdown"></div>
-            </article>
-            <article id="alarm-setter">
+
                 <button class='app__btn' id='alarm__start'>&#10148;</button>
-                <button class='app__btn hidden' id='alarm__pause'>&#8214;</button>
-                <button class='app__btn' id='alarm__reset'>&#8634;</button>
+
             </article>
             <article id='alarms-container'>
                 
@@ -37,24 +36,31 @@ const Alarm = function(container){
     const dropdown = document.getElementById('dropdown');
     const alarmsHistory = document.getElementById('alarms-container');
     const startBtn = document.getElementById('alarm__start');
-    const pauseBtn = document.getElementById('alarm__pause');
-    const resetBtn = document.getElementById('alarm__reset');
     const [hoursLabel, minutesLabel] = [...alarm.querySelectorAll('.time-unit')]
+    
 
     // Dynamic
 	let dropdownObject = new TimeDropdown(dropdown);
-
-    const startAlarm = function(e){
-        startBtn.classList.toggle('hidden');
-        pauseBtn.classList.toggle('hidden');
-    }
-    const pauseAlarm = function(e){
-        startBtn.classList.toggle('hidden');
-        pauseBtn.classList.toggle('hidden');
-    }
-    const resetAlarm = function(e){
+    let alarms = []
+    //Functions
+    function startNewAlarm(){
+        let tempObj = new AlarmCl(alarms.length, hoursLabel.textContent, minutesLabel.textContent, alarmsHistory)
+        alarms.push(tempObj);
+        tempObj.startAlarm();
+        saveInLocalStorage('alarms', alarms);
 
     }
+    
+    function renderAlarms(){
+        const data = localStorage.getItem('alarms')
+        if(!data) return;
+        alarms = [...JSON.parse(data).map((obj)=>new AlarmCl(obj.Id, obj.hour, obj.minute, alarmsHistory))];
+        
+        
+    }
+    // ------------------------------------------
+    // Event Listeners && Function calls
+    renderAlarms()
     document.addEventListener('keydown', (e)=>{
         if(e.key ==='Enter' && dropdownObject.timeUnitElement){
             dropdownObject.closeDropdown()
@@ -74,8 +80,7 @@ const Alarm = function(container){
         e.preventDefault()
         dropdownObject.handleWheel(e);
     })
-    startBtn.addEventListener('click',startAlarm)
-    pauseBtn.addEventListener('click',pauseAlarm)
-    resetBtn.addEventListener('click',resetAlarm)
+    startBtn.addEventListener('click',startNewAlarm)
+    
 }
 export default Alarm;

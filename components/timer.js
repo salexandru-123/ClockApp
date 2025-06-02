@@ -12,7 +12,7 @@
   
 
 */
-import { hoursToSec, minToSec, pad} from "./functions.js";
+import { hoursToSec, minToSec, saveInLocalStorage} from "./functions.js";
 import TimerCountdown from "./classes/TimerCountdown.js";
 import TimeDropdown from "./classes/TimeDropdown.js"
 function htmlContent(_container){
@@ -73,28 +73,23 @@ const Timer = function(container){
 		const timerObj = new TimerCountdown(timers.length, timerHistory, _time);
 		timers.push(timerObj)
 		timerObj.startTimer();
-		saveTimers();
+		saveInLocalStorage('timers', timers);
 	}
-	function displayTimers(){
-		console.log(JSON.parse(localStorage.getItem('timers')));
-		
-		if(!JSON.parse(localStorage.getItem('timers'))) return;
-		
-		timers = JSON.parse(localStorage.getItem('timers')).map((obj)=>new TimerCountdown(obj.Id, timerHistory, obj.time))
+	function renderLocalStorageData(key, objectClass, elementsContainer,  dataContainer = null){
+		const data = localStorage.getItem(key);
+		if(!data) return;
+		if(dataContainer === null) return JSON.parse(data).map((obj)=>new objectClass(obj.Id, elementsContainer, obj.time))
+		dataContainer = JSON.parse(data).map((obj)=>new objectClass(obj.Id, elementsContainer, obj.time))
 
 	}
+	renderLocalStorageData('timers',TimerCountdown,timerHistory,timers);
 	
-	displayTimers();
 	
-	function saveTimers(){
-		
-		localStorage.setItem('timers', JSON.stringify(timers));
-	}
 
 	function deleteTimer(id){
 		timers.splice(id, 1);
 		console.log(timers);
-		saveTimers();
+		saveInLocalStorage('timers', timers);
 	}
 	// ------------------------------
 

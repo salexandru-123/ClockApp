@@ -4,8 +4,8 @@ const tabs = document.querySelectorAll('.app__tab');
 const mainSection = document.querySelector('main');
 
 
-app.get(2)(mainSection);
-    
+app.get(4)(mainSection);
+
 
 nav.addEventListener('click', function(e){
     e.preventDefault()

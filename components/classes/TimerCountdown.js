@@ -31,7 +31,7 @@ class TimerCountdown{
 		this.#id = id
 		this.elementsContainer = document.createElement('div');
 		this.elementsContainer.id = id
-		this.elementsContainer.className='timer_history', 
+		this.elementsContainer.className='timer_history' 
 		this.elementsContainer.innerHTML=`
 			<span class='timer-span'></span>
 			<button class='start-timer-btn'>></button>

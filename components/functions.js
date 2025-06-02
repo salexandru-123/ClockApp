@@ -35,11 +35,16 @@ function pad(num) {
     return String(num).padStart(2, '0');
 }
 
+function saveInLocalStorage(key,data){
+        localStorage.setItem(key,JSON.stringify(data))
+}
+
 
 
 export {
     formatHour,
     minToSec,
     hoursToSec,
-    pad
+    pad,
+    saveInLocalStorage,
 }
