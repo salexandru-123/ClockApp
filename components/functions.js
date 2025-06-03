@@ -31,6 +31,19 @@ const hoursToSec = function(hours){
 const minToSec = function(minutes){
     return Number(minutes)*60
 }
+
+const millisecondsToX = function(milliseconds, timeUnit){
+    if(timeUnit === 'hours'){
+        return Number(milliseconds)/60/60/1000
+    }
+    if(timeUnit === 'minutes'){
+        return Number(milliseconds)/60/1000
+    }
+    if(timeUnit === 'seconds'){
+        return Number(milliseconds)/1000
+    }
+}
+
 function pad(num) {
     return String(num).padStart(2, '0');
 }
@@ -47,4 +60,5 @@ export {
     hoursToSec,
     pad,
     saveInLocalStorage,
+    millisecondsToX,
 }
