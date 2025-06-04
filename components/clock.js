@@ -4,9 +4,9 @@ const Clock = function (container) {
     container.insertAdjacentHTML('beforeend',`
         <section id="feature--1" class="app__feature" data-sect="1">
             <h1>Clock</h1>
-            <h1 class='app__clock'>${formatHour(new Date())}</h1>
+            <div class='clock'>${formatHour(new Date())}</div>
         </section>`)
-    const clockElement = container.querySelector('.app__clock');
+    const clockElement = container.querySelector('.clock');
     const _clock = setInterval(
         ()=>{
             // display the clock each second

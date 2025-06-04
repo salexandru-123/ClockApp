@@ -19,13 +19,13 @@ class AlarmCl{
         this.timeToWait = this.getAlarmTime(this.hour, this.minute)
         
         this.element = document.createElement('div')
-        this.element.className = 'alarm'
+        this.element.className = 'alarm history-row'
         this.element.id = this.Id;
         this.element.innerHTML = `
                 <span class='alarm-time'>${this.hour}:${this.minute}</span>
-                <button class='alarm-start'>&#10148;</button>
-                <button class='alarm-stop'>&#8214;</button>
-                <button class='alarm-delete'>X</button>
+                <button class='history_button alarm-start'>&#10148;</button>
+                <button class='history_button alarm-stop'>&#8214;</button>
+                <button class='history_button alarm-delete'>X</button>
             `
         
         container.appendChild(this.element);

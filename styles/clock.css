@@ -1,0 +1,9 @@
+.clock{
+    font-size: 5rem;
+    font-weight: 600;
+    letter-spacing: .2rem;
+    color: transparent;
+    background: linear-gradient(90deg, blue 0%, purple 25%, red 50%, yellow 75%, violet 100%);
+    background-clip: text;
+
+}

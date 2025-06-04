@@ -31,13 +31,13 @@ class TimerCountdown{
 		this.#id = id
 		this.elementsContainer = document.createElement('div');
 		this.elementsContainer.id = id
-		this.elementsContainer.className='timer_history' 
+		this.elementsContainer.className='timer_history history-row' 
 		this.elementsContainer.innerHTML=`
 			<span class='timer-span'></span>
-			<button class='start-timer-btn'>></button>
-			<button class='pause-timer-btn hidden'>P</button>
-			<button class='reset-timer-btn'>R</button>
-			<button class='delete-timer-btn'>X</button>
+			<button class='history_button start-timer-btn'>&#10148;</button>
+			<button class='history_button pause-timer-btn hidden'>&#8214;</button>
+			<button class='history_button reset-timer-btn'>&#8634;</button>
+			<button class='history_button delete-timer-btn'>X</button>
 		`
 		mainContainer.appendChild(this.elementsContainer);
 

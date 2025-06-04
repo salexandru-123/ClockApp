@@ -12,10 +12,10 @@ const Alarm = function(container){
                 
 				<div id="dropdown"></div>
 
-                <button class='app__btn' id='alarm__start'>&#10148;</button>
+                <button class='app__btn' id='alarm__start'>+</button>
 
             </article>
-            <article id='alarms-container'>
+            <article class='history-container' id='alarms-container'>
                 
             </article>
         </section>`

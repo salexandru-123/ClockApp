@@ -16,14 +16,11 @@ const Chronometer = function(container){
             <h1>Chronometer</h1>
             <article class='chronometer-container'>
                 <span class='chronometer'>00:00:00.000</span>
-                <button class='chrono-start'>&#10148;</button>
-                <button class='chrono-stop hidden'>&#8214;</button>
-                <button class='chrono-reset'>&#8634;</button>
-                <article class='chronometer-history'>
-                    <!--
-                    <span class='chrono-time' id='0'>00:01:20:0003</span>
-                    <button class='chrono-delete'>X</button>
-                    -->
+                <button class='app_btn chrono-start'>&#10148;</button>
+                <button class='app_btn chrono-stop hidden'>&#8214;</button>
+                <button class='app_btn chrono-reset'>&#8634;</button>
+                <article class='history-container' id='chronometer-history'>
+                   
                 </article>
             </article> 
         </section>`
@@ -33,7 +30,7 @@ const Chronometer = function(container){
     const stopBtn = document.querySelector('.chrono-stop');
     const resetBtn = document.querySelector('.chrono-reset');
     const chronoSpan = document.querySelector('.chronometer');
-    const chronoHistory = document.querySelector('.chronometer-history');
+    const chronoHistory = document.getElementById('chronometer-history');
 
     // dynamic variables 
     let chronometer= -1;
@@ -79,7 +76,7 @@ const Chronometer = function(container){
 
     const saveChronometer = (span)=>{
         const newHistory = document.createElement('div');
-        newHistory.className = `chronometer-container`;
+        newHistory.className = `chronometer-container  history-row`;
         newHistory.id =`chronometer-${chronometers.length}`
         newHistory.innerHTML=`<span>${span.textContent}</span>
             <button class='chrono-delete'>X</button>`

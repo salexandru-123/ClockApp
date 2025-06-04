@@ -30,16 +30,11 @@ function htmlContent(_container){
 				<div class="time-unit" data-type="seconds" data-max="59" data-min="0">00</div>
               	
 				<div id="dropdown"></div>
+
+				<button name="start" class="app__btn" id="start__timer">+</button>
             </article>
 
-            <article id='timer-buttons'>
-                <button name="start" class="app__btn" id="start__timer">&#10148;</button>
-                
-				<button name="pause" class="app__btn hidden" id="pause__timer">&#8214;</button>
-
-				<button name="reset" class="app__btn" id="reset__timer">&#8634;</button>
-            </article>
-			<article id='timers-history'>
+			<article class='history-container' id='timers-history'>
 			
 			</article>
         </section>`
