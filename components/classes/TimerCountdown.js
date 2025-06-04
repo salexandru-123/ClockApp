@@ -35,7 +35,7 @@ class TimerCountdown{
 		this.elementsContainer.innerHTML=`
 			<span class='timer-span'></span>
 			<button class='history_button start-timer-btn'>&#10148;</button>
-			<button class='history_button pause-timer-btn hidden'>&#8214;</button>
+			<button class='history_button pause-timer-btn'>&#8214;</button>
 			<button class='history_button reset-timer-btn'>&#8634;</button>
 			<button class='history_button delete-timer-btn'>X</button>
 		`
@@ -46,7 +46,7 @@ class TimerCountdown{
 		this.pauseBtn =  this.elementsContainer.querySelector('.pause-timer-btn');
 		this.resetBtn =  this.elementsContainer.querySelector('.reset-timer-btn');
 		this.deleteBtn =  this.elementsContainer.querySelector('.delete-timer-btn');
-		
+		this.pauseBtn.style.display='none';
 		this.#updateTimerElement()
 		
 		this.startBtn.addEventListener('click', this.startTimer.bind(this))
@@ -59,8 +59,17 @@ class TimerCountdown{
 
 
 	#toggleButtons(){
-		this.startBtn.classList.toggle('hidden');
-		this.pauseBtn.classList.toggle('hidden');
+		if(this.startBtn.style.display != 'none'){
+			this.startBtn.style.display = 'none';
+			this.pauseBtn.style.display = 'flex';
+			return
+		}
+			
+		if(this.pauseBtn.style.display != 'none'){
+			this.startBtn.style.display = 'flex';
+			this.pauseBtn.style.display = 'none';
+			return
+		}
 	}
 
 	#updateTimerElement(){
@@ -106,7 +115,7 @@ class TimerCountdown{
 	}
 
 	resetTimer(){
-		if(this.pauseBtn.classList.contains('hidden')) this.#toggleButtons()
+		this.#toggleButtons()
 		this.remainingTime = this.time;
 		clearInterval(this.timer);
 		this.timer = setInterval(this.countdown.bind(this), 1000);

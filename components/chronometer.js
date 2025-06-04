@@ -16,13 +16,14 @@ const Chronometer = function(container){
             <h1>Chronometer</h1>
             <article class='chronometer-container'>
                 <span class='chronometer'>00:00:00.000</span>
-                <button class='app_btn chrono-start'>&#10148;</button>
-                <button class='app_btn chrono-stop hidden'>&#8214;</button>
-                <button class='app_btn chrono-reset'>&#8634;</button>
-                <article class='history-container' id='chronometer-history'>
+                <button class='app__btn chrono-start'>&#10148;</button>
+                <button class='app__btn chrono-stop hidden'>&#8214;</button>
+                <button class='app__btn chrono-reset'>&#8634;</button>
+                
+            </article> 
+            <article class='history-container' id='chronometer-history'>
                    
                 </article>
-            </article> 
         </section>`
 
     // constants
@@ -79,7 +80,7 @@ const Chronometer = function(container){
         newHistory.className = `chronometer-container  history-row`;
         newHistory.id =`chronometer-${chronometers.length}`
         newHistory.innerHTML=`<span>${span.textContent}</span>
-            <button class='chrono-delete'>X</button>`
+            <button class='history_button chrono-delete'>X</button>`
         console.log(newHistory);
         
         chronometers.push({innerHTML:newHistory.innerHTML});
@@ -90,11 +91,11 @@ const Chronometer = function(container){
 
     const renderChronometers = ()=>{
         
-        chronometers = [...JSON.parse(localStorage.getItem('chronometers', chronometers))]
+        chronometers = [...JSON.parse(localStorage.getItem('chronometers', chronometers)??'[]')]
         if(chronometers.length === 0) return;
         chronometers.forEach((chronometerEl, index) => {
             let el = document.createElement('div');
-            el.className = 'chronometer-container';
+            el.className = 'chronometer-container  history-row';
             el.id = `chronometer-${index}`
             el.innerHTML = chronometerEl.innerHTML
             chronoHistory.appendChild(el)})

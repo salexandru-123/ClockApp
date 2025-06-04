@@ -11,7 +11,6 @@ class AlarmCl{
     constructor(id, hour, minute, container){
         
         this.elementsContainer = container;
-        console.log(this.elementsContainer);
         
         this.hour = hour;
         this.minute = minute;
@@ -32,6 +31,7 @@ class AlarmCl{
 
         this.startBtn = this.element.querySelector('.alarm-start');
         this.stopBtn = this.element.querySelector('.alarm-stop');
+        this.stopBtn.style.display = 'none'
         this.deleteBtn = this.element.querySelector('.alarm-delete');
         
         
@@ -41,7 +41,19 @@ class AlarmCl{
         
                 
     }
-    
+    #toggleButtons(){
+		if(this.startBtn.style.display != 'none'){
+			this.startBtn.style.display = 'none';
+			this.stopBtn.style.display = 'flex';
+			return
+		}
+			
+		if(this.stopBtn.style.display != 'none'){
+			this.startBtn.style.display = 'flex';
+			this.stopBtn.style.display = 'none';
+			return
+		}
+	}
     get Id(){return this.#id}
 
     getAlarmTime(hour, minute){
@@ -57,18 +69,17 @@ class AlarmCl{
     }
 
     startAlarm(){
+        this.#toggleButtons()
         this.alarmWaiter = setTimeout(()=>{
             alert('Alarm alarm alarm!');
         }, this.timeToWait);
     }
     stopAlarm(){
+        this.#toggleButtons()
         clearTimeout(this.alarmWaiter);
     }
     deleteAlarm(){
-        const data = localStorage.getItem('alarms');
-        if(!data)  return;
-        const newData = JSON.parse(data).map(obj=>obj.Id != this.Id);
-        saveInLocalStorage('alarms', newData);
+        clearTimeout(this.alarmWaiter);
         this.elementsContainer.removeChild(this.element);
     }
 }

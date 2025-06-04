@@ -5,5 +5,9 @@
     color: transparent;
     background: linear-gradient(90deg, blue 0%, purple 25%, red 50%, yellow 75%, violet 100%);
     background-clip: text;
+    min-height: 100%;
+}
 
+section>.clock{
+    padding: 50px;
 }

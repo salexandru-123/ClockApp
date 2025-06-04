@@ -41,20 +41,22 @@ const Alarm = function(container){
 
     // Dynamic
 	let dropdownObject = new TimeDropdown(dropdown);
-    let alarms = []
+    let alarms = new Map()
+    let counter = 0;
     //Functions
     function startNewAlarm(){
-        let tempObj = new AlarmCl(alarms.length, hoursLabel.textContent, minutesLabel.textContent, alarmsHistory)
+        let tempObj = new AlarmCl(counter, hoursLabel.textContent, minutesLabel.textContent, alarmsHistory)
         alarms.push(tempObj);
         tempObj.startAlarm();
         saveInLocalStorage('alarms', alarms);
-
+        counter++;
     }
     
     function renderAlarms(){
         const data = localStorage.getItem('alarms')
+        
         if(!data) return;
-        alarms = [...JSON.parse(data).map((obj)=>new AlarmCl(obj.Id, obj.hour, obj.minute, alarmsHistory))];
+        alarms = [...JSON.parse(data).map((obj,index)=>new AlarmCl(index, obj.hour, obj.minute, alarmsHistory))];
         
         
     }
@@ -82,7 +84,22 @@ const Alarm = function(container){
     })
     startBtn.addEventListener('click',startNewAlarm)
     alarmsHistory.addEventListener('click', function(e){
-        
+        e.preventDefault();
+        if(e.target.closest('.alarm-delete')){
+            
+            const data = localStorage.getItem('alarms');
+            if(!data)  return;
+            console.log(e.target.closest('.alarm'));
+            
+            let newAlarms = alarms.filter(obj=>{
+                console.log(obj.Id, e.target.closest('.alarm').id);
+                
+                return obj.Id != e.target.closest('.alarm').id
+            })
+            console.log(alarms, newAlarms);
+            alarms = newAlarms
+            saveInLocalStorage('alarms', alarms);
+        }
     })
 }
 export default Alarm;
