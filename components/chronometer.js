@@ -1,4 +1,4 @@
-import { millisecondsToX } from "./functions.js";
+import { millisecondsToX, saveInLocalStorage } from "./functions.js";
 const Chronometer = function(container){
     
     // Chronometer functionality
@@ -33,10 +33,12 @@ const Chronometer = function(container){
     const stopBtn = document.querySelector('.chrono-stop');
     const resetBtn = document.querySelector('.chrono-reset');
     const chronoSpan = document.querySelector('.chronometer');
+    const chronoHistory = document.querySelector('.chronometer-history');
 
     // dynamic variables 
-    let chronometer;
+    let chronometer= -1;
     let milliseconds = 0;
+    let chronometers = [];
     // functions
     const startChronometer = ()=>{
         startBtn.classList.add('hidden');
@@ -56,6 +58,7 @@ const Chronometer = function(container){
         startBtn.classList.remove('hidden');
         stopBtn.classList.add('hidden');
         clearInterval(chronometer);
+        saveChronometer(chronoSpan);
     }
     
     const resetChronometer = ()=>{
@@ -65,10 +68,45 @@ const Chronometer = function(container){
         milliseconds = 0;
         chronoSpan.textContent = '00:00:00.000'
     }
-    // event listeners 
+    const deleteChronometer = (e)=>{
+        if(e.target.closest('.chrono-delete')){
+            let chronoDiv = e.target.closest('.chronometer-container')
+            chronometers = chronometers.filter(chronometer => chronometer.innerHTML != chronoDiv.innerHTML)
+            chronoHistory.removeChild(chronoDiv)
+            saveInLocalStorage('chronometers', chronometers)
+        }
+    }
+
+    const saveChronometer = (span)=>{
+        const newHistory = document.createElement('div');
+        newHistory.className = `chronometer-container`;
+        newHistory.id =`chronometer-${chronometers.length}`
+        newHistory.innerHTML=`<span>${span.textContent}</span>
+            <button class='chrono-delete'>X</button>`
+        console.log(newHistory);
+        
+        chronometers.push({innerHTML:newHistory.innerHTML});
+        chronoHistory.appendChild(newHistory)
+        saveInLocalStorage('chronometers',chronometers);
+
+    } 
+
+    const renderChronometers = ()=>{
+        
+        chronometers = [...JSON.parse(localStorage.getItem('chronometers', chronometers))]
+        if(chronometers.length === 0) return;
+        chronometers.forEach((chronometerEl, index) => {
+            let el = document.createElement('div');
+            el.className = 'chronometer-container';
+            el.id = `chronometer-${index}`
+            el.innerHTML = chronometerEl.innerHTML
+            chronoHistory.appendChild(el)})
+    }
+    // event listeners && function calls
+    renderChronometers();
     startBtn.addEventListener('click', startChronometer)
     stopBtn.addEventListener('click', stopChronometer)
     resetBtn.addEventListener('click', resetChronometer)
-
+    chronoHistory.addEventListener('click', deleteChronometer)
 }
 export default Chronometer;
