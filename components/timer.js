@@ -23,14 +23,14 @@ function htmlContent(_container){
             <h1>Timer</h1>
 			
             <article id="timer">
-                <div class="time-unit" data-type="hours" data-max="23" data-min="0">00</div>:
-                
+				<div class="time-unit" data-type="hours" data-max="23" data-min="0">00</div>:
+				
 				<div class="time-unit" data-type="minutes" data-max="59" data-min="0">00</div>:
-                
+				
 				<div class="time-unit" data-type="seconds" data-max="59" data-min="0">00</div>
-              	
+				
 				<div id="dropdown"></div>
-
+				
 				<button name="start" class="app__btn" id="start__timer">+</button>
             </article>
 

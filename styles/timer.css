@@ -1,17 +1,18 @@
 
 
 #timer {
-  height: 50%; 
+  
   font-size: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  user-select: none;
   position: relative;
   width: fit-content;
+  gap:5px;
   
-  
+}
+#timer button{
+  margin-left: 5px;
 }
 
 #timer-buttons{
@@ -20,7 +21,7 @@
   min-height: max-content;
   align-items: center;
   justify-content: space-between;
-  gap:.5rem;
+  gap:10px;
 }
 
 .timer-history span{

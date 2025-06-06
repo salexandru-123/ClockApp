@@ -1,0 +1,27 @@
+.chronometers-container{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.chronometers-container button{
+    width: 3rem;
+    height: 3rem;
+    position: relative;
+
+}
+.chronometers-container button>*{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.chronometers-container span{
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+.chronometer-container span{
+    font-size: 1.2rem;
+    font-weight: 400;
+}
